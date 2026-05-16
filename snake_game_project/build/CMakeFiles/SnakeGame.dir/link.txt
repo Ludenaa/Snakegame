@@ -1,1 +1,0 @@
-/usr/bin/g++ -g CMakeFiles/SnakeGame.dir/src/Map.cpp.o CMakeFiles/SnakeGame.dir/src/ScoreBoard.cpp.o CMakeFiles/SnakeGame.dir/src/Snake.cpp.o CMakeFiles/SnakeGame.dir/src/main.cpp.o -o /home/jkungjk117/snake_game_project/bin/SnakeGame  -lcurses /usr/lib/x86_64-linux-gnu/libform.so 
