@@ -1,0 +1,24 @@
+snake_game_project/
+├── .vscode/            # VS Code 설정 폴더
+├── bin/                # 컴파일된 실행 파일이 저장되는 곳
+├── build/              # CMake 빌드 중간 파일들이 생성되는 곳
+├── data/               # 게임 리소스 및 데이터 폴더
+│   └── map1.txt        # 맵 데이터 텍스트 파일
+├── include/            # 헤더 파일 (.hpp) 모음
+│   ├── Map.hpp         # 맵 관련 선언
+│   ├── ScoreBoard.hpp  # 점수판 관련 선언
+│   └── Snake.hpp       # 뱀 객체 및 로직 관련 선언
+├── src/                # 소스 파일 (.cpp) 모음
+│   ├── main.cpp        # 게임 실행 메인 루프
+│   ├── Map.cpp         # 맵 기능 구현
+│   ├── ScoreBoard.cpp  # 점수판 기능 구현
+│   └── Snake.cpp       # 뱀 움직임 및 충돌 기능 구현
+├── build.sh            # 리눅스/맥 환경 빌드 자동화 스크립트
+├── CMakeLists.txt      # CMake 빌드 구성 설정 파일
+└── structure           # (기타 기록용 또는 임시 텍스트 파일)
+
+
+Rule:
+    파스칼 표기법   : 클래스, 구조체, 메소드
+    스네이크 표기법 : 함수, 변수
+    
