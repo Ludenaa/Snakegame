@@ -39,5 +39,5 @@ public:
 
     void ApplyItem(Snake& snake, ScoreBoard& score); //아이템 적용, 기존 아이템 삭제
 
-    const std::vector<ItemInfo>& getItemsInfo() const { return active_items; } //아이템 정보 get함수
+    const std::vector<ItemInfo>& getItemsInfo() const { return active_items; } 
 };
