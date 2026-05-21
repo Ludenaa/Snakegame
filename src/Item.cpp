@@ -1,7 +1,7 @@
 #include "Item.hpp"
 
-Item::Item() 
-Item::~Item()
+Item::Item() {}
+Item::~Item() {}    
 
 void Item::CreateItem(const Map& map){
     if(active_items.size() >= max_num) return; // 조건 : 동시에 최대 3개 존재
@@ -17,7 +17,7 @@ void Item::CreateItem(const Map& map){
     // 1이면 Growth 0이면 Poison
 
     item.position = {x,y}; //아이템 위치 저장 x,y순서
-    item.time =  100 // 임시 시간 지정
+    item.time =  100; // 임시 시간 지정
 
     active_items.push_back(item);
 }
