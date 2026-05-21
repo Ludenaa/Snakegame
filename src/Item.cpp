@@ -1,7 +1,7 @@
 #include "Item.hpp"
 
-Item::Item() {}
-Item::~Item(){}
+Item::Item() 
+Item::~Item()
 
 void Item::CreateItem(const Map& map){
     if(active_items.size() >= max_num) return; // 조건 : 동시에 최대 3개 존재
