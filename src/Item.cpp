@@ -23,7 +23,7 @@ void Item::CreateItem(const Map& map){
 }
 
 bool Item::TakeItem(const Snake& snake, const Map& map){
-    std::pair<int, int> snake_head = map.get(); // 정보받아옴
+    std::pair<int, int> snake_head = snake.get_head(); // 정보받아옴
     
     int snake_x = snake_head.first;
     int snake_y = snake_head.second;

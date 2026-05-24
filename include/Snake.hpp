@@ -32,4 +32,5 @@ public:
     void decrease();
 
     void get_position();
+    std::pair<int, int> get_head() const { return {body.back().first, body.back().second};  };
 };

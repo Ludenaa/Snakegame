@@ -32,4 +32,6 @@ public:
 
     int getWidth();
     int getHight();
+    
+    bool is_empty(int x, int y) const { return map[x][y] == EMPTY; }
 };
