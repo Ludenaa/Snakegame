@@ -1,8 +1,11 @@
 #include <ncurses.h>
 #include <iostream>
+#include <chrono>
 #include "ScoreBoard.hpp"
 #include "Snake.hpp"
 #include "Map.hpp"
+
+using namespace std::chrono;
 
 // 사용자 함수 (테스트 등)
 
@@ -18,9 +21,35 @@ int get_direction(int ch){
         case KEY_LEFT:
             return 3;
         case 'q':
-            return 0;
+            return -1; // 'q' 입력 시 종료 신호
     }
-    return 0;// 예상치 못한 입력
+    return ERR;// 예상치 못한 입력, 현재 방향으로 진행
+}
+
+
+/**
+ * @brief 주어진 시간(ms) 동안 입력을 수집하고 마지막 입력을 반환
+ * @param duration_ms 대기할 시간 (밀리초)
+ * @return 마지막으로 입력된 키값, 입력 없으면 ERR
+ */
+int collect_input(int duration_ms) {
+    auto start = std::chrono::steady_clock::now();
+    int last_input = ERR;
+
+    while(true) {
+        auto now = std::chrono::steady_clock::now();
+        int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
+        int remaining = duration_ms - elapsed;
+
+        if(remaining <= 0) break;
+
+        timeout(remaining);
+        int ch = getch();
+        if(ch != ERR) last_input = ch;
+        if(ch == 'q') break; // 'q' 입력 시 즉시 종료
+    }
+
+    return last_input;
 }
 
 
@@ -37,9 +66,7 @@ int main() {
     
 
     //게임 난이도
-    int const difficulty = 1; //ms 단위, 낮을수록 어려움s
-    timeout(1000/(difficulty+1)); // 게임 루프마다 1000ms마다 키 입력 체크, 이걸로 게임 속도 조절
-
+    int const difficulty = 1; //ms 단위, 낮을수록 어려움
 
 
     /* 맵 객체 */
@@ -63,12 +90,12 @@ int main() {
 
     keypad(stdscr, TRUE); // 특수 키 입력 활성화
     while(true){
-        int ch = getch();
-        if(ch=='q') break;
-        if(ch != ERR) {
-            // 키를 입력하지 않아서 시간이 지나 입력을 못 받은 경우 ch는 ERR임. 이 경우 현재 방향 그대로 진행
-            //스네이크 방향 설정및 이동
-            snk.change_direction(get_direction(ch));
+        int last_input = collect_input(1000/(difficulty+3));
+
+        if(last_input == 'q') break; // 'q' 입력 시 게임 종료
+        // 특정 시간동안 입력을 수집, 해당 입력이 유효하면 해당 방향으로 전환
+        if(last_input != ERR) {
+            snk.change_direction(get_direction(last_input));
         }
 
         if(!snk.move()) break;
