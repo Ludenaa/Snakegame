@@ -43,12 +43,12 @@ void Item::ApplyItem(Snake& snake, ScoreBoard& score){
         case ItemType::Growth:
             snake.grow(eaten_item.position.first, eaten_item.position.second);
             // score.add_growth();
-            score.growth_cnt++;
+            score.addScore(1);
             break;
         case ItemType::Poison:
             snake.decrease();
             // score.add_poison();
-            score.poison_cnt++;
+            score.addScore(-1); //addScore에서 음수인 경우 poison 횟수 증가, 점수 감소를 구현했습니다!
             break;
     }
     active_items.erase(active_items.begin() + item_idx); //리스트에서 제거

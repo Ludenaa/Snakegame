@@ -4,9 +4,9 @@
  * @brief 윈도우 높이:h, 윈도우 너비:w, Y 좌표:y, X 좌표:x
  */
 ScoreBoard::ScoreBoard(int h, int w, int y, int x) {
+    scoreboard_win = newwin(h, w, y, x);
+    scoreboard_size = {h,w,y,x};
     resetScore();
-    ScoreBoard_win = newwin(h, w, y, x);
-    ScoreBoard_size = {h,w,y,x};
     render();
 }
 
@@ -14,7 +14,7 @@ ScoreBoard::ScoreBoard(int h, int w, int y, int x) {
  * @brief 소멸자: 할당받은 윈도우 자원 해제
  */
 ScoreBoard::~ScoreBoard() {
-    delwin(ScoreBoard_win);
+    delwin(scoreboard_win);
 }
 
 
@@ -54,6 +54,11 @@ void ScoreBoard::resetScore() {
     poison_cnt = 0;     //획득한 Poison Items
     gate_cnt = 0;       //gate 사용 횟수
 
+    //시간
+    survival_time = 0;
+    start_time    = 0;
+    end_time      = 0;
+
     //추후 Mission
 }
 
@@ -62,14 +67,14 @@ void ScoreBoard::resetScore() {
  * @brief 화면에 출력
  */
 void ScoreBoard::render() {
-    werase(ScoreBoard_win);
+    werase(scoreboard_win);
 
-    //ScoreBoard_win render line
-    box(ScoreBoard_win, 0, 0);
-    mvwprintw(ScoreBoard_win, 0, 8, "[ ScoreBoard ]");
-    mvwprintw(ScoreBoard_win, 2, 2, "B : (%d) / (%d)", current_length, max_length);
-    mvwprintw(ScoreBoard_win, 3, 2, "+ : %d", growth_cnt);
-    mvwprintw(ScoreBoard_win, 4, 2, "- : %d", poison_cnt);
-    mvwprintw(ScoreBoard_win, 5, 2, "G : %d", gate_cnt);
-    wrefresh(ScoreBoard_win);
+    //scoreboard_win render line
+    box(scoreboard_win, 0, 0);
+    mvwprintw(scoreboard_win, 0, 8, "[ ScoreBoard ]");
+    mvwprintw(scoreboard_win, 2, 2, "B : (%d) / (%d)", current_length, max_length);
+    mvwprintw(scoreboard_win, 3, 2, "+ : %d", growth_cnt);
+    mvwprintw(scoreboard_win, 4, 2, "- : %d", poison_cnt);
+    mvwprintw(scoreboard_win, 5, 2, "G : %d", gate_cnt);
+    wrefresh(scoreboard_win);
 }

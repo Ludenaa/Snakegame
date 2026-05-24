@@ -1,6 +1,5 @@
 // ScoreBoard.hpp
 #pragma once
-#define SCOREBOARD_HPP
 
 #include <ncurses.h>
 
@@ -14,10 +13,11 @@ struct WinSize{
 */
 
 class ScoreBoard {
-public:
-    WINDOW* ScoreBoard_win;     // ncurses 전용 윈도우 포인터
-    WinSize ScoreBoard_size;   //ScoreBoard의 사이즈 정보
+private:
+    WINDOW* scoreboard_win;     // ncurses 전용 윈도우 포인터
+    WinSize scoreboard_size;   //ScoreBoard의 사이즈 정보
     WinSize Mission_size;      //Mission의 사이즈 정보(상호 호출 가능 수준까지 오면 적용 예정)
+
 
     //점수 관련
     int current_length; //현재 길이
@@ -29,8 +29,8 @@ public:
     int survival_time;  //스네이크의 생존 시간
     int start_time;     //게임 시작 시간
     int end_time;       //게임 종료 시간
-    
 
+public:
     // 생성자 및 소멸자
     ScoreBoard(int h, int w, int y, int x);
     ~ScoreBoard();
