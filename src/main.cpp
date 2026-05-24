@@ -34,14 +34,21 @@ int main() {
     // 이걸 해줘야 하위 윈도우들이 정상적으로 출력됨
     refresh();
 
+    
+
+    //게임 난이도
+    int const difficulty = 1; //ms 단위, 낮을수록 어려움s
+    timeout(1000/(difficulty+1)); // 게임 루프마다 1000ms마다 키 입력 체크, 이걸로 게임 속도 조절
+
+
+
     /* 맵 객체 */
-    Map map(1);
+    Map map(difficulty);
     
     /* 스코어보드 객체 */
     //윈도우 높이, 윈도우 너비, Y 좌표, X 좌표
     ScoreBoard sb(8, 30, 0, 50);
-    sb.render();
-
+    
     /* 스네이크 객체 */
     Snake snk(10, 10, 3, 1, map.map);
 
@@ -49,18 +56,24 @@ int main() {
     /* Item */
 
 
+
     map.render();
+    sb.render();
+    
 
     keypad(stdscr, TRUE); // 특수 키 입력 활성화
-    while(1){
-        int ch = getch();     // 키 입력 받기
+    while(true){
+        int ch = getch();
         if(ch=='q') break;
+        if(ch != ERR) {
+            // 키를 입력하지 않아서 시간이 지나 입력을 못 받은 경우 ch는 ERR임. 이 경우 현재 방향 그대로 진행
+            //스네이크 방향 설정및 이동
+            snk.change_direction(get_direction(ch));
+        }
 
-        //스네이크 방향 설정및 이동
-        snk.change_direction(get_direction(ch));
         if(!snk.move()) break;
 
-        //맵 렌더링
+        //렌더링
         map.render();
         refresh();
         sb.render();
@@ -70,7 +83,7 @@ int main() {
 
 
     //키를 누를 때까지 화면 유지
-    //getch();
+    getch();
 
     //ncurses 모드 종료
     endwin();
