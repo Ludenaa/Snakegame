@@ -1,36 +1,34 @@
 #pragma once
-#define SNAKE_HPP
+
 #include <deque>
 #include <utility>
 #include <ncurses.h>
+#include "Gate.hpp"
 
 #define MAP_SIZE 100
-/*
-    todo : 진출 게이트의 좌표 받아오기
-*/
+
 class Snake {
 private:
-    std::deque<std::pair<int,int>> body; 
+    std::deque<std::pair<int,int>> body;
     // 0 1 2 3 순서대로 상, 우, 하, 좌
     int Dirction[4][2] = {{-1,0},{0,1},{1,0},{0,-1}};
     // 배열 저장 포인터
     int (*arr)[MAP_SIZE];
-    //현재 방향
+    // Gate 포인터
+    Gate* gate;
+    // 현재 방향
     int dir;
-    // 이동할 위치 
-    int dx,dy;
-    //진입게이트와 진출게이트 좌표;
-    std::pair<int,int> ingate, outgate;
+    // 이동할 위치
+    int dx, dy;
 
 public:
-    Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE]);
+    Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate* g);
     ~Snake();
 
-    void change_direction(int dir); // 방향 전환
+    void changeDirection(int dir);
     bool move();
     void grow(int x, int y);
     void decrease();
 
-    void get_position();
-    std::pair<int, int> get_head() const { return {body.back().first, body.back().second};  };
+    std::pair<int,int> getHead() const { return {body.back().first, body.back().second}; }
 };

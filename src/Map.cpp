@@ -77,7 +77,7 @@ bool Map::render(){
                     printw("P "); // 포이즌 아이템
                     break;
                 case GATE:
-                    printw("  "); // 게이트 (공백 등으로 표시 가능)
+                    printw("O "); // 게이트 (공백 등으로 표시 가능)
                     break;
                 default:
                     printw("? "); // 예외 처리
@@ -90,4 +90,13 @@ bool Map::render(){
     refresh();
 
     return true;
+}
+
+
+int Map::getWidth() {
+    return width;
+}
+
+int Map::getHight() {
+    return height;
 }

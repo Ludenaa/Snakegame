@@ -1,107 +1,125 @@
 #include "Snake.hpp"
+#include "Map.hpp"
 
 /**
- * @brief x : 꼬리의 행 좌표, y = 꼬리의 열 좌표, snakesize : 뱀의 길이, int (*p)[MAP_SIZE] : 2차원 배열 포인터, firstdir : 초기 방향
+ * @brief x : 꼬리의 행 좌표, y : 꼬리의 열 좌표
+ *        snakesize : 뱀의 초기 길이, firstdir : 초기 방향
+ *        p : 맵 배열 포인터, g : Gate 포인터
  */
-Snake::Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE]) {
+Snake::Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate* g) {
     dir = firstdir;
     arr = p;
+    gate = g;
     dx = x;
     dy = y;
 
     // 꼬리부터 시작해서 진행방향쪽으로 머리까지 이어붙임
     for (int i = 0; i < snakesize; i++) {
-        body.push_back({dx,dy});
-        arr[dx][dy] = 4;
+        body.push_back({dx, dy});
+        arr[dx][dy] = SNAKE_BODY;
         dx += Dirction[dir][0];
         dy += Dirction[dir][1];
     }
-    arr[body.back().first][body.back().second] = 3;
+    arr[body.back().first][body.back().second] = SNAKE_HEAD;
 }
 
 Snake::~Snake() {}
 
+
 /**
- * @brief 뱀의 이동 방향 변경 
- * 0 1 2 3 각각 상 우 좌 하
- * 반대 방향을 누르면 실패하는 로직은 move 에서 구현
+ * @brief 뱀의 이동 방향 변경
+ *        반대 방향 입력 시 무시
  */
-void Snake::change_direction(int nextdir) {
+void Snake::changeDirection(int nextdir) {
+    // 반대 방향: 현재 방향과 합이 2(상-하) 또는 합이 4(좌-우)
+    int opposite = (dir + 2) % 4;
+    if (nextdir == opposite) return;
     dir = nextdir;
 }
 
+
 /**
- * @brief 뱀을 한 칸 이동시킴
- * 이동이 가능하면 true 를, 이동이 불가하면 false 를 return
+ * @brief 뱀을 한 칸 이동
+ * @return 이동 가능하면 true, 게임 오버 조건이면 false
  */
 bool Snake::move() {
-    dx = body.back().first + Dirction[dir][0];
+    dx = body.back().first  + Dirction[dir][0];
     dy = body.back().second + Dirction[dir][1];
 
-    //배열 크기를 벗어날 경우 false
-    if(dx < 0 || dx >= MAP_SIZE || dy < 0 || dy >= MAP_SIZE) return false;
+    // 배열 범위 초과
+    if (dx < 0 || dx >= MAP_SIZE || dy < 0 || dy >= MAP_SIZE) return false;
 
-    // 이동 방향에 0: 빈공간 일 경우 꼬리 한 칸 제거, 앞으로 한 칸 이동
-    else if(arr[dx][dy] == 0){
-        grow(dx,dy);
-        decrease();
-    }
+    switch (TileType(arr[dx][dy])) {
 
-    // 이동 방향에 1: 벽, 2: Immune Wall, 3: Snake 있을 경우 false
-    else if(arr[dx][dy] == 1 || arr[dx][dy] == 2 || arr[dx][dy] == 3) return false;
+        case EMPTY:
+            grow(dx, dy);
+            decrease();
+            break;
 
-    //growth item 을 먹었을 경우
-    else if(arr[dx][dy] == 11){
-        grow(dx,dy);
-    }
-    //poison item 을 먹었을 경우
-    else if(arr[dx][dy] == 22){
-        grow(dx,dy);
-        decrease();
-        decrease();
-    }
-    //portal 에 들어갔을 경우
-    else if(arr[dx][dy] == 33){
-        ingate = {dx,dy};
-        outgate = {999,999};
+        case WALL:
+        case IMMUNE_WALL:
+        case SNAKE_HEAD:
+        case SNAKE_BODY:
+            return false; //겜 오버
 
-        /* 미구현
-        //진출 게이트가 가장자리에 있을 때
-        if(outgate.first == 0 || outgate.first == MAP_SIZE-1 || outgate.second == 0 || outgate.second == MAP_SIZE-1){
-            if(outgate.first == 0) change_direction(2);
-            else if(outgate.second == MAP_SIZE-1)change_direction(3);
-            else if(outgate.first == MAP_SIZE-1)change_direction(0);
-            else change_direction(1);
-            grow(outgate.first+ Dirction[dir][0],outgate.second+ Dirction[dir][1]);
+        case GROWTH:
+            grow(dx, dy);
+
+            // sb에 growth 전달 -> sb.addGrowth()
+            break;
+
+        case POISON:
+            grow(dx, dy);
+            decrease();
+            decrease();
+            
+            // sb에 posion 전달 -> sb.addPoison()
+            break;
+
+        case GATE: {
+            std::pair<int,int> exit_pos;
+            int exit_dir;
+            gate->getExitInfo({dx, dy}, dir, exit_pos, exit_dir);
+
+            changeDirection(exit_dir);
+
+            // 게이트 위치에서 진출 방향으로 한 칸 이동한 위치
+            // 게이트 자체에서 구현하려고 했는데 여기가 더 깔끔해서 여기서 +1 할게
+            int next_r = exit_pos.first  + Dirction[exit_dir][0];
+            int next_c = exit_pos.second + Dirction[exit_dir][1];
+
+            grow(next_r, next_c);
+            decrease();
+            break;
         }
-        //진출 방향이 좌 우 일경우 (상하 방향이 벽으로 막혀있을 경우)
-        else if(arr[outgate.first+1][outgate.second] == 1 && arr[outgate.first-1][outgate.second] == 1){
 
-        }
-        */
+        default:
+            break;
     }
 
-    //뱀의 길이가 3보다 작을 경우 경우 false
-    if(body.size() < 3) return false;
+    // 뱀의 길이가 3 미만이면 게임 오버
+    if (body.size() < 3) return false;
 
     return true;
 }
 
-/**
- * @brief x,y 좌표로 뱀을 1 성장시킴
- */
-void Snake::grow(int x, int y){
-    arr[body.back().first][body.back().second] = 4;
-    body.push_back({x,y});
-    arr[x][y] = 3;
-}
 
 /**
- * @brief 뱀의 꼬리 부분을 1 감소시킴
+ * @brief (x, y) 위치로 뱀 머리를 1칸 성장
  */
-void Snake::decrease(){
-    dx = body.front().first,
+void Snake::grow(int x, int y) {
+    arr[body.back().first][body.back().second] = SNAKE_BODY;
+    body.push_back({x, y});
+    arr[x][y] = SNAKE_HEAD;
+}
+
+
+/**
+ * @brief 뱀의 꼬리를 1칸 감소
+ */
+void Snake::decrease() {
+    dx = body.front().first;
     dy = body.front().second;
     body.pop_front();
-    arr[dx][dy] = 0;
+    arr[dx][dy] = EMPTY; // 이미 뱀으로 덮어서 게이트를 지난 경우 문제가 생김, 수정해야함
 }
