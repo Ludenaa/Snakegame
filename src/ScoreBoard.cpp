@@ -6,6 +6,7 @@
 ScoreBoard::ScoreBoard(int h, int w, int y, int x) {
     scoreboard_win = newwin(h, w, y, x);
     scoreboard_size = {h,w,y,x};
+    mission_size = {0, 0, 0, 0};
     resetScore();
     render();
 }
@@ -19,21 +20,24 @@ ScoreBoard::~ScoreBoard() {
 
 
 /**
- * @brief 점수 추가 및 최고 점수 갱신(B, +, -)
+ * @brief Growth Item 획득 횟수 추가및 현재 길이 증가, 최대 길이 갱신
  */
-void ScoreBoard::addScore(int point) {
-    //Item(growth, poison)을 먹은 경우 호출
-    if(point == 1)  growth_cnt++;
-    else            poison_cnt++;
-
+void ScoreBoard::addGrowth() {
+    growth_cnt++;
+    
     //MAX update
-    current_length += point;
+    current_length++; //길이 증가
     if (current_length > max_length) {
         max_length = current_length;
     }
+}
 
-    //일단 렌더를 따로 함, 추후 협의 필요
-    render();
+/**
+ * @brief Poison Item 획득 횟수 추가
+ */
+void ScoreBoard::addPoison() {
+    poison_cnt++; //획득한 Poison Items 횟수 추가
+    current_length--; //현재 길이 감소
 }
 
 /**
@@ -66,7 +70,7 @@ void ScoreBoard::resetScore() {
 /**
  * @brief 화면에 출력
  */
-void ScoreBoard::render() {
+void ScoreBoard::render() const{
     werase(scoreboard_win);
 
     //scoreboard_win render line

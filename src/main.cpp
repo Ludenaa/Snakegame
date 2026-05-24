@@ -34,18 +34,22 @@ int main() {
     // 이걸 해줘야 하위 윈도우들이 정상적으로 출력됨
     refresh();
 
-    //맵 렌더링
+    /* 맵 객체 */
     Map map(1);
-    map.render();
-
-    /* test */
+    
+    /* 스코어보드 객체 */
     //윈도우 높이, 윈도우 너비, Y 좌표, X 좌표
     ScoreBoard sb(8, 30, 0, 50);
     sb.render();
 
-    //스네이크 객체 생성
+    /* 스네이크 객체 */
     Snake snk(10, 10, 3, 1, map.map);
 
+
+    /* Item */
+
+
+    map.render();
 
     keypad(stdscr, TRUE); // 특수 키 입력 활성화
     while(1){

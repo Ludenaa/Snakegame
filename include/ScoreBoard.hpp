@@ -16,7 +16,7 @@ class ScoreBoard {
 private:
     WINDOW* scoreboard_win;     // ncurses 전용 윈도우 포인터
     WinSize scoreboard_size;   //ScoreBoard의 사이즈 정보
-    WinSize Mission_size;      //Mission의 사이즈 정보(상호 호출 가능 수준까지 오면 적용 예정)
+    WinSize mission_size;      //Mission의 사이즈 정보(상호 호출 가능 수준까지 오면 적용 예정)
 
 
     //점수 관련
@@ -37,8 +37,9 @@ public:
 
     
     //주요 함수
-    void addScore(int point);
+    void addGrowth();
+    void addPoison();
     void addGateCnt();
     void resetScore();
-    void render();
+    void render() const;
 };
