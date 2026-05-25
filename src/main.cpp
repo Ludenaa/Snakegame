@@ -3,6 +3,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
+
 #include "ScoreBoard.hpp"
 #include "Snake.hpp"
 #include "Map.hpp"
@@ -61,11 +62,17 @@ int main() {
     keypad(stdscr, TRUE);
     refresh();
 
+    int game_difficulty = 1; //처음에 난이도를 입력받는 형태로 하는게 좋아보임
+
     /* 객체 생성 순서 주의: Gate → Snake 순서로 생성 */
-    Map map(1);
-    ScoreBoard sb(8, 30, 0, 50);
+    Map map(game_difficulty);
+    ScoreBoard sb(8, 30, 0, map.getWidth()*2 + 4); //맵 출력할때 (문자+1)씩 출력함 그래서 *2
     Gate gate(map.map, map.getHight(), map.getWidth());
     Snake snk(10, 10, 3, 1, map.map, &gate);
+
+    // 난이도 반영
+    sb.setDifficulty(game_difficulty);
+
     /* Item */
 
 
@@ -74,15 +81,16 @@ int main() {
     sb.render();
 
     //게임 시간 기록(점수 측정및 게이트 생성 타이밍용)
-    auto game_start = std::chrono::steady_clock::now();
-    auto last_gate_spawn = game_start;
+    std::chrono::steady_clock::time_point game_start = sb.getStartTime();
+    std::chrono::steady_clock::time_point last_gate_spawn = game_start;
 
 
     while(true) {
         int ch = collectInput(200); // 200ms tick
         if(ch == 'q') break;
-        // 방향 전환 (-1이면 방향키 외 입력 → 무시)
         int dir = getDirection(ch);
+
+        // 방향 전환 (-1이면 방향키 외 입력 → 무시)
         if(dir != -1) snk.changeDirection(dir);
 
         if((1 /* 스네이크쪽에서 게이트를 지나고 있는지 active 리턴 받아서 사용 예정*/) 
@@ -93,7 +101,12 @@ int main() {
         }
 
         // 이동 실패 시 게임 오버
-        if(!snk.move()) break;
+        if(!snk.move()) {
+            sb.setEndTime();
+            break;
+        }
+
+        sb.updateSurvivalTime(); //생존 시간 업데이트
 
         map.render();
         sb.render();
