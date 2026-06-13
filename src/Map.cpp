@@ -161,4 +161,3 @@ void Map::clearItem(int r, int c) {
         map[r][c] = 0; // EMPTY
     }
 }
-message.txt
