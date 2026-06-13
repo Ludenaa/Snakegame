@@ -20,6 +20,8 @@ private:
     int dir;
     // 이동할 위치
     int dx, dy;
+    // 쉴드 보유 상태
+    bool has_shield;
 
 public:
     Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate* g);
@@ -29,6 +31,8 @@ public:
     bool move();
     void grow(int x, int y);
     void decrease();
+    void nowShield(){has_shield = true;}
+    bool getShieldStatus()const{return has_shield;}
 
     std::pair<int,int> getHead() const { return {body.back().first, body.back().second}; }
 };
