@@ -25,7 +25,7 @@ void Item::removeExpiredItems(Map& map) { // 기간이 지난 아이템 맵 삭�
     for (auto it = active_items.begin(); it != active_items.end(); ) {
         int time = std::chrono::duration_cast<std::chrono::seconds>(now - it->spawn_time).count();
         if (time >= 10) {
-            map.map[it->position.first][it->position.second] = 0;
+            map.clearItem(it->position.first, it->position.second);
             it = active_items.erase(it); // 리스트에서 지우기
         } else {
             ++it;
