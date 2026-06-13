@@ -101,7 +101,7 @@ int main() {
         // 방향 전환 (-1이면 방향키 외 입력 → 무시)
         if(dir != -1) snk.changeDirection(dir);
 
-        if((!snk.ispassinggate()) //스네이크 통과중에는 게이트 생성X(SPAWN에서 GATE 삭제도 호출하므로 SPAWN만 제어하면됨)
+        if((!snk.isPassinggate()) //스네이크 통과중에는 게이트 생성X(SPAWN에서 GATE 삭제도 호출하므로 SPAWN만 제어하면됨)
         && (isExpired(last_gate_spawn, 10))) {
             // 10초마다 게이트 생성
             gate.spawn();

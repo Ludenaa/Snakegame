@@ -40,5 +40,5 @@ public:
     std::pair<int,int> getHead() const { return {body.back().first, body.back().second}; }
 
     // 뱀이 게이트를 통과하는 중인지 여부
-    int ispassinggate() const;
+    int isPassinggate() const;
 };

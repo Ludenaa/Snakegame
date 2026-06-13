@@ -144,6 +144,6 @@ void Snake::decrease() {
     passingGate--;
 }
 
-int Snake::ispassinggate() const{
+int Snake::isPassinggate() const{
     return passingGate;
 }

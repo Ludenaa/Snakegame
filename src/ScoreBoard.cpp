@@ -63,7 +63,7 @@ void ScoreBoard::addGateCnt() {
  * @brief 점수 초기화
  */
 void ScoreBoard::resetScore() {
-    current_length = 0; //현재 길이
+    current_length = 3; //현재 길이(초기값 3)
     max_length = 0;     //최대 길이
     growth_cnt = 0;     //획득한 Growth Items
     poison_cnt = 0;     //획득한 Poison Items
