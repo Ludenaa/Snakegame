@@ -75,11 +75,9 @@ bool Snake::move() {
         case POISON:
             grow(dx, dy);
             decrease();
+            scoreBoard->addPoison();
             if(shield)shield = false;
-            else {
-                decrease(); // poison 먹으면 길이 2칸 줄어듬, shield 있으면 1칸만 줄어듬
-                scoreBoard->addPoison();
-            }
+            else decrease();// poison 먹으면 길이 2칸 줄어듬, shield 있으면 1칸만 줄어듬
             // sb에 posion 전달 -> sb.addPoison()
             break;
 
