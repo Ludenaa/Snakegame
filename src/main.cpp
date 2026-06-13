@@ -74,7 +74,6 @@ const char* difficultyName(Difficulty d) {
 
 /**
  * @brief 미션 클리어 후 다음 스테이지 안내를 화면 중앙에 약 3초간 출력
- *        "MISSION COMPLETE" / "Next Stage is" / 다음 난이도 이름
  * @param next 다음에 진행할 난이도
  */
 void showStageTransition(Difficulty next) {
@@ -94,7 +93,7 @@ void showStageTransition(Difficulty next) {
     mvprintw(cy + 1, (cols - (int)std::strlen(l3)) / 2, "%s", l3);
     refresh();
 
-    napms(3000);  // 3초 대기 (ncurses 기본 제공 함수)
+    napms(3000);  // 3초 대기
     flushinp();   // 대기 중 눌린 키 입력 버퍼 비우기(다음 스테이지 오작동 방지)
 }
 
@@ -110,8 +109,6 @@ StageResult playStage(const GameConfig& config) {
     ScoreBoard sb(8, 30, 0, config.map_size.width * 2 + 4, config); //맵 출력할때 (문자+1)씩 출력함 그래서 *2
     Gate gate(map.map, config.map_size.height, config.map_size.width);
     Snake snk(10, 10, 3, 1, map.map, &gate, &sb);
-
-    /* Item */
     Item item;
 
     // 이전 스테이지 화면 잔상 제거 후 초기 렌더링
