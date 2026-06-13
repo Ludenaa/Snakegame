@@ -23,6 +23,8 @@ private:
     int dx, dy;
     // 실드 아이템 보유 여부
     bool shield;
+    // 게이트 통과 중 여부
+    int passingGate;
     // ScoreBoard 포인터
     ScoreBoard* scoreBoard;
 
@@ -36,4 +38,7 @@ public:
     void decrease();
 
     std::pair<int,int> getHead() const { return {body.back().first, body.back().second}; }
+
+    // 뱀이 게이트를 통과하는 중인지 여부
+    int ispassinggate() const;
 };

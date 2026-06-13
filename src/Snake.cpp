@@ -13,6 +13,7 @@ Snake::Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate
     dx = x;
     dy = y;
     shield = false;
+    passingGate = 0;
     scoreBoard = sb;
 
     // 꼬리부터 시작해서 진행방향쪽으로 머리까지 이어붙임
@@ -42,6 +43,10 @@ void Snake::changeDirection(int nextdir) {
  * @return 이동 가능하면 true, 게임 오버 조건이면 false
  */
 bool Snake::move() {
+    if (passingGate > 0) {
+        // 게이트 통과 중이면 남은 이동 수 감소
+        passingGate--;
+    }
     dx = body.back().first  + Dirction[dir][0];
     dy = body.back().second + Dirction[dir][1];
 
@@ -79,6 +84,7 @@ bool Snake::move() {
             break;
 
         case GATE: {
+            passingGate = body.size(); // 게이트 진입 시 뱀 전체 길이만큼 카운트다운 시작
             std::pair<int,int> exit_pos;
             int exit_dir;
             gate->getExitInfo({dx, dy}, dir, exit_pos, exit_dir);
@@ -123,6 +129,7 @@ void Snake::grow(int x, int y) {
     arr[body.back().first][body.back().second] = SNAKE_BODY;
     body.push_back({x, y});
     arr[x][y] = SNAKE_HEAD;
+    passingGate++;
 }
 
 
@@ -134,4 +141,9 @@ void Snake::decrease() {
     dy = body.front().second;
     body.pop_front();
     arr[dx][dy] = EMPTY; // 이미 뱀으로 덮어서 게이트를 지난 경우 문제가 생김, 수정해야함
+    passingGate--;
+}
+
+int Snake::ispassinggate() const{
+    return passingGate;
 }
