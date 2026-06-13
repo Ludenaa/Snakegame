@@ -10,8 +10,8 @@
 enum class ItemType
 {
     Growth,
-    Poison
-    //추가 Item//
+    Poison,
+    Sheild//추가 Item//
 };
 
 struct ItemInfo
