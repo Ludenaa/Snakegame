@@ -38,26 +38,7 @@ bool Item::TakeItem(const Snake& snake, const Map& map){
     return false;
 }
 
-void Item::ApplyItem(Snake& snake, ScoreBoard& score){
-    ItemInfo eaten_item = active_items[item_idx]; //
-    switch (eaten_item.type)
-    {
-        case ItemType::Growth:
-            snake.grow(eaten_item.position.first, eaten_item.position.second);
-            // score.add_growth();
-            score.addGrowth();
-            break;
-        case ItemType::Poison:
-            snake.decrease();
-            // score.add_poison();
-            score.addPoison();
-            break;
-    /*  case ItemType::Shield:
-            snake.nowShield();
-            score.addSheild(); 
-            break;                */
-            
-    }
+void Item::deleteItem(){
     active_items.erase(active_items.begin() + item_idx); //리스트에서 제거
     item_idx = -1; // 초기화
 }
