@@ -1,7 +1,14 @@
+/**
+ * @file Map.hpp
+ * @brief 스네이크 게임의 맵 데이터 구조 정의 및 오브젝트 배치/조회를 위한 인터페이스 제공
+ */
+
 #pragma once
 #define MAP_HPP
+
 #include <vector>
 #include <string>
+#include <utility> // std::pair 구조체 사용을 위해 추가
 
 enum TileType {
     EMPTY = 0,
@@ -23,6 +30,7 @@ private:
     int map_num;
 
     bool loadMapFile();
+
 public:
     Map(int map_num);
     int map[100][100];
@@ -31,7 +39,28 @@ public:
     bool render();
 
     int getWidth();
-    int getHight();
+    int getHight(); // 기존 모듈(main.cpp 등)과의 링크 호환성을 위해 명명 규칙 유지
     
     bool is_empty(int x, int y) const { return map[x][y] == EMPTY; }
+
+    /**
+     * @brief 맵 내부의 빈 공간(EMPTY) 중 무작위 좌표 하나를 생성하여 반환합니다.
+     * @return std::pair<int, int> {행(row/x), 열(col/y)} 구조의 좌표 쌍
+     */
+    std::pair<int, int> getRandomEmptyPosition();
+
+    /**
+     * @brief 아이템 매니저로부터 전달받은 검증된 좌표에 아이템 타일을 즉시 배치합니다.
+     * @param r 행(Row, X)
+     * @param c 열(Col, Y)
+     * @param item_type GROWTH(5) 또는 POISON(6)
+     */
+    void setItem(int r, int c, int item_type);
+
+    /**
+     * @brief 아이템을 획득했거나 소멸 시간이 지나 해당 좌표를 다시 빈 공간(EMPTY)으로 초기화합니다.
+     * @param r 행(Row, X)
+     * @param c 열(Col, Y)
+     */
+    void clearItem(int r, int c);
 };
