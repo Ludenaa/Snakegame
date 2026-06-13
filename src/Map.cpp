@@ -68,7 +68,7 @@ bool Map::loadMapFile(){
 /**
  * @brief 누수 및 프리징 해결을 위한 최적화된 렌더링 로직 (Double Buffering 기법 적용)
  */
-bool Map::render(){
+bool Map::render() const{
     if (force_redraw) {
         clear(); // ncurses 전체 화면 지우기
         for (int i = 0; i < 100; i++) {
@@ -111,7 +111,7 @@ bool Map::render(){
  * @brief 맵 내부의 빈 공간(EMPTY) 중 무작위 좌표 하나를 샘플링하여 반환하는 함수
  * @return std::pair<int, int> {행(Row/Y축), 열(Col/X축)} 구조의 빈 공간 좌표
  */
-std::pair<int, int> Map::getRandomEmptyPosition() {
+std::pair<int, int> Map::getRandomEmptyPosition() const{
     int r, c;
     do {
         // 행(r)은 height(세로) 범위 내에서, 열(c)은 width(가로) 범위 내에서 무작위 선택
