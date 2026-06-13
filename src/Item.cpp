@@ -15,7 +15,7 @@ void Item::CreateItem(Map& map){
     else item.type = ItemType::Shield;
 
     item.position = empty_block; //아이템 위치 저장 x,y순서
-    item.time =  100; // 임시 시간 지정
+    item.spawn_time = std::chrono::steady_clock::now();// 생성 시간 지정
     active_items.push_back(item);
     map.setItem(item.position.first, item.position.second, static_cast<int>(item.type));
 }
