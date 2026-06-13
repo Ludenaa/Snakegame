@@ -23,7 +23,7 @@ Map::Map(int map_num) : map_num(map_num){
 }
 
 /**
- * @brief 맵 배열을 전면 초기화하는 함수 (\n 이스케이프 오타 수정 완료)
+ * @brief 맵 배열을 전면 초기화하는 함수
  */
 void Map::mapClear(){
     for(int i=0; i<100; i++){
@@ -69,83 +69,64 @@ bool Map::loadMapFile(){
  * @brief 누수 및 프리징 해결을 위한 최적화된 렌더링 로직 (Double Buffering 기법 적용)
  */
 bool Map::render(){
-    // 스테이지가 바뀌었거나 게임이 처음 시작될 때 화면 전체를 완전히 밀고 재설정
     if (force_redraw) {
         clear(); // ncurses 전체 화면 지우기
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 100; j++) {
-                prev_map[i][j] = -1; // 버퍼를 비현실적인 값으로 초기화하여 첫 프레임에 다 그려지도록 유도
+                prev_map[i][j] = -1; // 버퍼 초기화
             }
         }
         force_redraw = false;
     }
 
-    // 변경된 좌표만 콕 집어서 그리기 (출력 병목 및 프리징 제거 핵심)
+    // i = 행(Row/Y축), j = 열(Col/X축) 순서로 순회
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             
-            // 현재 맵 상태가 이전 프레임과 다를 때만 렌더링 수행
+            // 현재 맵 상태가 이전 프레임과 다를 때만 해당 칸을 찾아가서 갱신
             if (map[i][j] != prev_map[i][j]) {
-                move(i, j * 2); // ncurses 커서를 해당 타일 좌표로 정확히 이동 (문자공백 출력이므로 j * 2)
+                move(i, j * 2); // ncurses는 move(y, x) 형식을 취하므로 move(행, 열*2)가 정확합니다.
                 
                 switch (TileType(map[i][j])) {
-                    case EMPTY:
-                        printw(". "); // 빈 공간
-                        break;
-                    case WALL:
-                        printw("# "); // 일반 벽
-                        break;
-                    case IMMUNE_WALL:
-                        printw("X "); // 관문 불가능 벽
-                        break;
-                    case SNAKE_HEAD:
-                        printw("H "); // 뱀 머리
-                        break;
-                    case SNAKE_BODY:
-                        printw("B "); // 뱀 몸통
-                        break;
-                    case GROWTH:
-                        printw("G "); // 그로스 아이템
-                        break;
-                    case POISON:
-                        printw("P "); // 포이즌 아이템
-                        break;
-                    case GATE:
-                        printw("O "); // 게이트
-                        break;
-                    default:
-                        printw("? "); 
-                        break;
+                    case EMPTY:       printw(". "); break;
+                    case WALL:        printw("# "); break;
+                    case IMMUNE_WALL: printw("X "); break;
+                    case SNAKE_HEAD:  printw("H "); break;
+                    case SNAKE_BODY:  printw("B "); break;
+                    case GROWTH:      printw("G "); break;
+                    case POISON:      printw("P "); break;
+                    case GATE:        printw("O "); break;
+                    case SHIELD:      printw("S "); break; // ⭐ 실드 아이템 스폰 시 화면에 'S ' 출력 추가
+                    default:          printw("? "); break;
                 }
-                // 화면에 그려진 최신 상태를 버퍼에 기록
                 prev_map[i][j] = map[i][j];
             }
         }
     }
-    refresh(); // ncurses 가상 화면 반영
+    refresh(); 
     return true;
 }
 
 /**
  * @brief 맵 내부의 빈 공간(EMPTY) 중 무작위 좌표 하나를 샘플링하여 반환하는 함수
- * @return std::pair<int, int> {행(row/x), 열(col/y)} 구조의 빈 공간 좌표
+ * @return std::pair<int, int> {행(Row/Y축), 열(Col/X축)} 구조의 빈 공간 좌표
  */
-std::pair<int, int> Map::getRandomEmptyPosition() const {
+std::pair<int, int> Map::getRandomEmptyPosition() {
     int r, c;
     do {
-        // 현재 로드된 맵의 높이와 너비 제한 내에서 랜덤 좌표 추출
+        // 행(r)은 height(세로) 범위 내에서, 열(c)은 width(가로) 범위 내에서 무작위 선택
         r = rand() % height;
         c = rand() % width;
     } while (map[r][c] != 0); // 0(EMPTY) 타일이 나올 때까지 반복 수행
     
-    return {r, c};
+    return {r, c}; // {행, 열} 순서로 반환하여 Item.cpp의 empty_block에 대입됨
 }
 
 /**
- * @brief 이미 검증된 좌표에 아이템을 즉시 배치하는 함수 (중복 조건문 제거로 최적화)
+ * @brief 이미 검증된 좌표에 아이템을 즉시 배치하는 함수
  * @param r 행(Row)
  * @param c 열(Col)
- * @param item_type 5(GROWTH) 또는 6(POISON)
+ * @param item_type 5(GROWTH), 6(POISON), 8(SHIELD)
  */
 void Map::setItem(int r, int c, int item_type) {
     if (r >= 0 && r < height && c >= 0 && c < width) {
@@ -154,7 +135,7 @@ void Map::setItem(int r, int c, int item_type) {
 }
 
 /**
- * @brief 아이템 획득 및 만료 시 해당 좌표를 빈 공간으로 즉시 되돌리는 함수 (중복 조건문 제거)
+ * @brief 아이템 획득 및 만료 시 해당 좌표를 빈 공간으로 즉시 되돌리는 함수
  */
 void Map::clearItem(int r, int c) {
     if (r >= 0 && r < height && c >= 0 && c < width) {
