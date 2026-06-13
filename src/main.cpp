@@ -66,8 +66,8 @@ int main() {
 
     /* 객체 생성 순서 주의: Gate → Snake 순서로 생성 */
     Map map(game_difficulty);
-    ScoreBoard sb(8, 30, 0, map.getWidth()*2 + 4); //맵 출력할때 (문자+1)씩 출력함 그래서 *2
-    Gate gate(map.map, map.getHight(), map.getWidth());
+    ScoreBoard sb(8, 30, 0, (/*map.getWidth()*/ 21)*2 + 4); //맵 출력할때 (문자+1)씩 출력함 그래서 *2
+    Gate gate(map.map, (/*map.getHeight()*/ 21), (/*map.getWidth()*/ 21));
     Snake snk(10, 10, 3, 1, map.map, &gate);
 
     // 난이도 반영
