@@ -130,7 +130,7 @@ bool Map::render(){
  * @brief 맵 내부의 빈 공간(EMPTY) 중 무작위 좌표 하나를 샘플링하여 반환하는 함수
  * @return std::pair<int, int> {행(row/x), 열(col/y)} 구조의 빈 공간 좌표
  */
-std::pair<int, int> Map::getRandomEmptyPosition() {
+std::pair<int, int> Map::getRandomEmptyPosition() const {
     int r, c;
     do {
         // 현재 로드된 맵의 높이와 너비 제한 내에서 랜덤 좌표 추출

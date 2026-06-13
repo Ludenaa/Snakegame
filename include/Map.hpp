@@ -47,7 +47,7 @@ public:
      * @brief 맵 내부의 빈 공간(EMPTY) 중 무작위 좌표 하나를 생성하여 반환합니다.
      * @return std::pair<int, int> {행(row/x), 열(col/y)} 구조의 좌표 쌍
      */
-    std::pair<int, int> getRandomEmptyPosition();
+    std::pair<int, int> getRandomEmptyPosition() const;
 
     /**
      * @brief 아이템 매니저로부터 전달받은 검증된 좌표에 아이템 타일을 즉시 배치합니다.
