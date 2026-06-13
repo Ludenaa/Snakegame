@@ -178,6 +178,7 @@ int main() {
     // ncurses 초기화 (게임 전체에서 1회만 수행)
     initscr();
     cbreak();
+    noecho();   // 방향키 외 입력이 화면에 찍혀 맵이 깨지는 것 방지
     curs_set(0);
     keypad(stdscr, TRUE);
     refresh();
