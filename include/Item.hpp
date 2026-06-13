@@ -33,7 +33,7 @@ public:
     Item();
     ~Item();
 
-    void CreateItem(const Map& map); //아이템 생성
+    void CreateItem(Map& map); //아이템 생성
 
     bool TakeItem(const Snake& snake, const Map& map); //아이템 먹었는지 확인
 
