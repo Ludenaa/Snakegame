@@ -11,7 +11,7 @@ enum class ItemType
 {
     Growth,
     Poison,
-    Sheild   
+    Shield   
 };
 
 struct ItemInfo
