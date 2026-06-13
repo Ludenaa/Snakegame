@@ -75,19 +75,35 @@ void ScoreBoard::resetScore() {
     survival_time = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count();
 }
 
-
+/**
+ * @brief 생존 시간 업데이트
+ */
 void ScoreBoard::updateSurvivalTime() {
     survival_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time).count();
 }
 
-
+/**
+ * @brief 게임 시작 시간 반환, 게임 종료 시간 설정
+ */
 std::chrono::steady_clock::time_point ScoreBoard::getStartTime() const {
     return start_time;
 }
 
-
+/**
+ * @brief 게임 종료 시간 설정, 생존 시간 최종 업데이트
+ */
 void ScoreBoard::setEndTime() {
     end_time = std::chrono::steady_clock::now();
+}
+
+/**
+ * @brief 미션 달성 여부 반환
+ */
+bool ScoreBoard::completeMission() const {
+    return (current_length >= config.mission.length) &&
+           (growth_cnt >= config.mission.growth) &&
+           (poison_cnt >= config.mission.poison) &&
+           (gate_cnt >= config.mission.gate);
 }
 
 

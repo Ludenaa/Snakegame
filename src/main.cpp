@@ -67,9 +67,9 @@ int main() {
 
     // 난이도 설정 (Easy, Normal, Hard 중 선택)
     GameConfig config = makeConfig(static_cast<Difficulty>(
-        // Difficulty::Easy
+        Difficulty::Easy
         // Difficulty::Normal
-        Difficulty::Hard
+        // Difficulty::Hard
     )); 
 
 
@@ -101,8 +101,8 @@ int main() {
         // 방향 전환 (-1이면 방향키 외 입력 → 무시)
         if(dir != -1) snk.changeDirection(dir);
 
-        if((1 /* 스네이크쪽에서 게이트를 지나고 있는지 active 리턴 받아서 사용 예정*/) 
-        && (isExpired(last_gate_spawn, 10) || 0 /* 뱀의 길이가 10 이상인 경우(sb.getScore() >= 10) */)) {
+        if((!snk.ispassinggate()) //스네이크 통과중에는 게이트 생성X(SPAWN에서 GATE 삭제도 호출하므로 SPAWN만 제어하면됨)
+        && (isExpired(last_gate_spawn, 10))) {
             // 10초마다 게이트 생성
             gate.spawn();
             last_gate_spawn = std::chrono::steady_clock::now();

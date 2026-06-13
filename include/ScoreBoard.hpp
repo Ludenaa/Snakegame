@@ -57,4 +57,5 @@ public:
     //getters & setters
     std::chrono::steady_clock::time_point getStartTime() const;
     void setEndTime();
+    bool completeMission() const;
 };
