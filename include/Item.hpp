@@ -18,7 +18,7 @@ struct ItemInfo
 {
     std::pair<int,int> position;//아이템 위치
     ItemType type;
-    int time; // 머무는 시간
+    std::chrono::steady_clock::time_point spawn_time;// 머무는 시간
 };
 
 
