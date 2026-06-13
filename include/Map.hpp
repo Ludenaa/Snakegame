@@ -18,7 +18,8 @@ enum TileType {
     SNAKE_BODY = 4,
     GROWTH = 5,
     POISON = 6,
-    GATE = 7
+    GATE = 7,
+    SHIELD = 8 // ⭐ Item.cpp에서 새롭게 정의한 Shield 아이템 타입 추가
 };
 
 class Map {
@@ -39,28 +40,28 @@ public:
     bool render();
 
     int getWidth();
-    int getHight(); // 기존 모듈(main.cpp 등)과의 링크 호환성을 위해 명명 규칙 유지
+    int getHight(); 
     
     bool is_empty(int x, int y) const { return map[x][y] == EMPTY; }
 
     /**
      * @brief 맵 내부의 빈 공간(EMPTY) 중 무작위 좌표 하나를 생성하여 반환합니다.
-     * @return std::pair<int, int> {행(row/x), 열(col/y)} 구조의 좌표 쌍
+     * @return std::pair<int, int> {행(Row/Y축), 열(Col/X축)} 구조의 좌표 쌍
      */
-    std::pair<int, int> getRandomEmptyPosition() const;
+    std::pair<int, int> getRandomEmptyPosition();
 
     /**
      * @brief 아이템 매니저로부터 전달받은 검증된 좌표에 아이템 타일을 즉시 배치합니다.
-     * @param r 행(Row, X)
-     * @param c 열(Col, Y)
-     * @param item_type GROWTH(5) 또는 POISON(6)
+     * @param r 행(Row/Y축)
+     * @param c 열(Col/X축)
+     * @param item_type GROWTH(5), POISON(6), SHIELD(8)
      */
     void setItem(int r, int c, int item_type);
 
     /**
      * @brief 아이템을 획득했거나 소멸 시간이 지나 해당 좌표를 다시 빈 공간(EMPTY)으로 초기화합니다.
-     * @param r 행(Row, X)
-     * @param c 열(Col, Y)
+     * @param r 행(Row/Y축)
+     * @param c 열(Col/X축)
      */
     void clearItem(int r, int c);
 };
