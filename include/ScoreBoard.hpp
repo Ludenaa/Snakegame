@@ -2,6 +2,7 @@
 #pragma once
 #include <ncurses.h>
 #include <chrono>
+#include "Config.hpp"
 
 struct WinSize{
     //윈도우 높이:h, 윈도우 너비:w, Y 좌표:y, X 좌표:x
@@ -28,8 +29,7 @@ private:
     int gate_cnt;       //gate 사용 횟수
 
     //난이도 관련
-    int difficulty;
-    int const mission_difficulty[5][4] = {{0,}, {10, 5, 2, 1}, {20, 10, 5, 10}}; //미션 난이도
+    const GameConfig& config;
 
     //시간 관련
     int survival_time;  //스네이크의 생존 시간(seconds)
@@ -38,7 +38,7 @@ private:
 
 public:
     // 생성자 및 소멸자
-    ScoreBoard(int h, int w, int y, int x);
+    ScoreBoard(int h, int w, int y, int x, const GameConfig& config);
     ~ScoreBoard();
 
     
@@ -55,6 +55,4 @@ public:
     //getters & setters
     std::chrono::steady_clock::time_point getStartTime() const;
     void setEndTime();
-    void setDifficulty(int difficulty);
-    
 };

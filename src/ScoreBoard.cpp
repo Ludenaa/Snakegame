@@ -1,14 +1,16 @@
 #include <chrono>
 #include "ScoreBoard.hpp"
+#include "Config.hpp"
 
 /**
  * @brief 윈도우 높이:h, 윈도우 너비:w, Y 좌표:y, X 좌표:x
  */
-ScoreBoard::ScoreBoard(int h, int w, int y, int x) {
+ScoreBoard::ScoreBoard(int h, int w, int y, int x, const GameConfig& config) : config(config) {
     scoreboard_win = newwin(h, w, y, x);
     scoreboard_size = {h,w,y,x};
     mission_win = newwin(h, w, y+10, x);
     mission_size = {h, w, y+10, x};
+
     resetScore();
     render();
 }
@@ -86,17 +88,6 @@ void ScoreBoard::setEndTime() {
     end_time = std::chrono::steady_clock::now();
 }
 
-/**
- * @brief Mission 난이도 설정
- */
-void ScoreBoard::setDifficulty(int const difficulty) {
-    if(difficulty < 1 || difficulty >= sizeof(mission_difficulty)/sizeof(mission_difficulty[0])) {
-        // 유효하지 않은 난이도 입력
-        return;
-    }
-    this->difficulty = difficulty;
-}
-
 
 /**
  * @brief render: ScoreBoard와 Mission 윈도우에 현재 점수와 미션 상태를 출력
@@ -115,11 +106,11 @@ void ScoreBoard::render() const{
 
     //mission render line
     box(mission_win, 0, 0);
-    mvwprintw(mission_win, 0, 8, "[ Mission ]");
-    mvwprintw(mission_win, 2, 2, "B : (%d)\t(%s)", mission_difficulty[difficulty][0], (mission_difficulty[difficulty][0]<=current_length) ? "V" : " ");
-    mvwprintw(mission_win, 3, 2, "+ : (%d)\t(%s)", mission_difficulty[difficulty][1], (mission_difficulty[difficulty][1]<=growth_cnt) ? "V" : " ");
-    mvwprintw(mission_win, 4, 2, "- : (%d)\t(%s)", mission_difficulty[difficulty][2], (mission_difficulty[difficulty][2]<=poison_cnt) ? "V" : " ");
-    mvwprintw(mission_win, 5, 2, "G : (%d)\t(%s)", mission_difficulty[difficulty][3], (mission_difficulty[difficulty][3]<=gate_cnt) ? "V" : " ");
+    mvwprintw(mission_win, 0, 8, "[ Mission ]"); 
+    mvwprintw(mission_win, 2, 2, "B : (%d)\t(%s)", config.mission.length, (config.mission.length<=current_length) ? "V" : " ");
+    mvwprintw(mission_win, 3, 2, "+ : (%d)\t(%s)", config.mission.growth, (config.mission.growth<=growth_cnt) ? "V" : " ");
+    mvwprintw(mission_win, 4, 2, "- : (%d)\t(%s)", config.mission.poison, (config.mission.poison<=poison_cnt) ? "V" : " ");
+    mvwprintw(mission_win, 5, 2, "G : (%d)\t(%s)", config.mission.gate, (config.mission.gate<=gate_cnt) ? "V" : " ");
 
 
     wrefresh(mission_win);

@@ -8,7 +8,9 @@
 #include "Snake.hpp"
 #include "Map.hpp"
 #include "Gate.hpp"
-#include "Item.hpp" 
+#include "Item.hpp"
+#include "Config.hpp"
+
 /**
  * @brief 키 입력을 방향(0~3)으로 변환
  *        0:상 1:우 2:하 3:좌, 방향키 외 입력은 -1 반환
@@ -62,16 +64,15 @@ int main() {
     keypad(stdscr, TRUE);
     refresh();
 
-    int game_difficulty = 1; //처음에 난이도를 입력받는 형태로 하는게 좋아보임
+    // 난이도 설정 (Easy, Normal, Hard 중 선택)
+    GameConfig config = makeConfig(static_cast<Difficulty>(Difficulty::Easy)); 
+    std::cout << config.map_num;
 
     /* 객체 생성 순서 주의: Gate → Snake 순서로 생성 */
-    Map map(game_difficulty);
-    ScoreBoard sb(8, 30, 0, (/*map.getWidth()*/ 21)*2 + 4); //맵 출력할때 (문자+1)씩 출력함 그래서 *2
-    Gate gate(map.map, (/*map.getHeight()*/ 21), (/*map.getWidth()*/ 21));
+    Map map(config.map_num); 
+    ScoreBoard sb(8, 30, 0, config.map_size.width * 2 + 4, config); //맵 출력할때 (문자+1)씩 출력함 그래서 *2
+    Gate gate(map.map, config.map_size.height, config.map_size.width);
     Snake snk(10, 10, 3, 1, map.map, &gate, &sb);
-
-    // 난이도 반영
-    sb.setDifficulty(game_difficulty);
 
     /* Item */
     Item item;
