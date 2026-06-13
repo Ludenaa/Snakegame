@@ -64,12 +64,17 @@ int main() {
     keypad(stdscr, TRUE);
     refresh();
 
+
     // 난이도 설정 (Easy, Normal, Hard 중 선택)
-    GameConfig config = makeConfig(static_cast<Difficulty>(Difficulty::Easy)); 
-    std::cout << config.map_num;
+    GameConfig config = makeConfig(static_cast<Difficulty>(
+        // Difficulty::Easy
+        // Difficulty::Normal
+        Difficulty::Hard
+    )); 
+
 
     /* 객체 생성 순서 주의: Gate → Snake 순서로 생성 */
-    Map map(config.map_num); 
+    Map map(config.map_num); //config 래퍼로 받아서 내부에서 사용 바랍니다!
     ScoreBoard sb(8, 30, 0, config.map_size.width * 2 + 4, config); //맵 출력할때 (문자+1)씩 출력함 그래서 *2
     Gate gate(map.map, config.map_size.height, config.map_size.width);
     Snake snk(10, 10, 3, 1, map.map, &gate, &sb);
@@ -84,11 +89,12 @@ int main() {
     //게임 시간 기록(점수 측정및 게이트 생성 타이밍용)
     std::chrono::steady_clock::time_point game_start = sb.getStartTime();
     std::chrono::steady_clock::time_point last_gate_spawn = game_start;
+
     //아이템 생성 타이밍용
     std::chrono::steady_clock::time_point last_item_spawn = game_start;
 
     while(true) {
-        int ch = collectInput(200); // 200ms tick
+        int ch = collectInput(config.tick_ms);
         if(ch == 'q') break;
         int dir = getDirection(ch);
 

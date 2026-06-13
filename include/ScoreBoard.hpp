@@ -1,17 +1,19 @@
-// ScoreBoard.hpp
+/**
+ * @file ScoreBoard.hpp
+ * @brief 게임 점수판과 미션 상태를 관리하는 ScoreBoard 클래스 선언
+ */
+
 #pragma once
 #include <ncurses.h>
 #include <chrono>
 #include "Config.hpp"
+
 
 struct WinSize{
     //윈도우 높이:h, 윈도우 너비:w, Y 좌표:y, X 좌표:x
     int h, w, y, x;
 };
 
-/*
-    todo : Scoreboard가 관리하는 Mission 구현
-*/
 
 class ScoreBoard {
 private:

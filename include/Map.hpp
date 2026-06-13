@@ -24,7 +24,7 @@ enum TileType {
 
 class Map {
 private:
-    const int MAP_SIZES[5][2] = {{0, 0}, {21, 21}};
+    const int MAP_SIZES[5][2] = {{0, 0}, {21, 21}, {25, 25}, {31, 31}, {0, 0}}; // 맵 번호에 따른 (높이, 너비) 매핑
 
     int width;
     int height;

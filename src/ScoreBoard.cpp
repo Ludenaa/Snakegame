@@ -1,3 +1,8 @@
+/**
+ * @file ScoreBoard.cpp
+ * @brief 게임 점수판과 미션 상태를 관리하는 ScoreBoard 클래스 구현
+ */
+
 #include <chrono>
 #include "ScoreBoard.hpp"
 #include "Config.hpp"
@@ -6,11 +11,9 @@
  * @brief 윈도우 높이:h, 윈도우 너비:w, Y 좌표:y, X 좌표:x
  */
 ScoreBoard::ScoreBoard(int h, int w, int y, int x, const GameConfig& config) : config(config) {
-    scoreboard_win = newwin(h, w, y, x);
-    scoreboard_size = {h,w,y,x};
-    mission_win = newwin(h, w, y+10, x);
-    mission_size = {h, w, y+10, x};
-
+    scoreboard_win = newwin(h, w, y, x);    scoreboard_size = {h,w,y,x};
+    mission_win = newwin(h, w, y+10, x);    mission_size = {h, w, y+10, x};
+    
     resetScore();
     render();
 }
@@ -30,9 +33,9 @@ ScoreBoard::~ScoreBoard() {
  */
 void ScoreBoard::addGrowth() {
     growth_cnt++;
-    
-    //MAX update
     current_length++; //길이 증가
+
+    //MAX update
     if (current_length > max_length) {
         max_length = current_length;
     }
@@ -70,7 +73,6 @@ void ScoreBoard::resetScore() {
     start_time    = std::chrono::steady_clock::now();
     end_time      = start_time;
     survival_time = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count();
-    //추후 Mission
 }
 
 
