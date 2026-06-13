@@ -7,18 +7,14 @@ void Item::CreateItem(const Map& map){
     if(active_items.size() >= max_num) return; // 조건 : 동시에 최대 3개 존재
 
     ItemInfo item;
-    int x,y;
-    do{ //빈좌표 받기
-        x = rand() % 20 + 1;
-        y = rand() % 20 + 1;
-    } while (!map.is_empty(x,y));
-
+    std::pair<int, int> empty_block = map.getRandomEmptyPosition();
+    
     int rand_val = rand() % 3;
     if(rand_val == 0) item.type = ItemType::Growth;
     else if (rand_val == 1) item.type = ItemType::Poison;
     else item.type = ItemType::Shield;
 
-    item.position = {x,y}; //아이템 위치 저장 x,y순서
+    item.position = empty_block; //아이템 위치 저장 x,y순서
     item.time =  100; // 임시 시간 지정
 
     active_items.push_back(item);

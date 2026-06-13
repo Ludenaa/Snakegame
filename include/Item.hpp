@@ -37,9 +37,13 @@ public:
 
     bool TakeItem(const Snake& snake, const Map& map); //아이템 먹었는지 확인
 
+<<<<<<< HEAD
     void ApplyItem(Snake& snake, ScoreBoard& score); //아이템 적용, 기존 아이템 
     
     void deleteItem();
+=======
+    void deleteItem(); //아이템 적용, 기존 아이템 삭제
+>>>>>>> dc9e5f518b829de5d20f7d02ca24acb7a29d2932
 
     const std::vector<ItemInfo>& getItemsInfo() const { return active_items; } 
 };
