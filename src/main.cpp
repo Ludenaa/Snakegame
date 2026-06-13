@@ -8,7 +8,7 @@
 #include "Snake.hpp"
 #include "Map.hpp"
 #include "Gate.hpp"
-
+#include "Item.hpp" 
 /**
  * @brief 키 입력을 방향(0~3)으로 변환
  *        0:상 1:우 2:하 3:좌, 방향키 외 입력은 -1 반환
@@ -74,7 +74,7 @@ int main() {
     sb.setDifficulty(game_difficulty);
 
     /* Item */
-
+    Item item;
 
     // 초기 렌더링
     map.render();
@@ -83,7 +83,8 @@ int main() {
     //게임 시간 기록(점수 측정및 게이트 생성 타이밍용)
     std::chrono::steady_clock::time_point game_start = sb.getStartTime();
     std::chrono::steady_clock::time_point last_gate_spawn = game_start;
-
+    //아이템 생성 타이밍용
+    std::chrono::steady_clock::time_point last_item_spawn = game_start;
 
     while(true) {
         int ch = collectInput(200); // 200ms tick
@@ -100,11 +101,24 @@ int main() {
             last_gate_spawn = std::chrono::steady_clock::now();
         }
 
+        // 5초마다 아이템 생성
+        if(isExpired(last_item_spawn,5)){
+            item.CreateItem(map);
+            last_item_spawn = std::chrono::steady_clock::now();
+        }
+        // 시간초과된 아이템 삭제
+        item.removeExpiredItems(map);
+
         // 이동 실패 시 게임 오버
         if(!snk.move()) {
             sb.setEndTime();
             break;
         }
+
+        //먹은 아이템을 리스트에서 제거
+        std::pair<int, int> head = snk.getHead();
+        item.clearItem(head.first, head.second);
+
 
         sb.updateSurvivalTime(); //생존 시간 업데이트
 
