@@ -4,6 +4,7 @@
 #include <utility>
 #include <ncurses.h>
 #include "Gate.hpp"
+#include "ScoreBoard.hpp"
 
 #define MAP_SIZE 100
 
@@ -20,19 +21,19 @@ private:
     int dir;
     // 이동할 위치
     int dx, dy;
-    // 쉴드 보유 상태
-    bool has_shield;
+    // 실드 아이템 보유 여부
+    bool shield;
+    // ScoreBoard 포인터
+    ScoreBoard* scoreBoard;
 
 public:
-    Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate* g);
+    Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate* g, ScoreBoard* sb);
     ~Snake();
 
     void changeDirection(int dir);
     bool move();
     void grow(int x, int y);
     void decrease();
-    void isShield(){has_shield = true;}
-    bool getShieldStatus()const{return has_shield;}
 
     std::pair<int,int> getHead() const { return {body.back().first, body.back().second}; }
 };

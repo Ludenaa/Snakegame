@@ -6,12 +6,14 @@
  *        snakesize : 뱀의 초기 길이, firstdir : 초기 방향
  *        p : 맵 배열 포인터, g : Gate 포인터
  */
-Snake::Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate* g) {
+Snake::Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate* g, ScoreBoard* sb) {
     dir = firstdir;
     arr = p;
     gate = g;
     dx = x;
     dy = y;
+    shield = false;
+    scoreBoard = sb;
 
     // 꼬리부터 시작해서 진행방향쪽으로 머리까지 이어붙임
     for (int i = 0; i < snakesize; i++) {
@@ -64,15 +66,16 @@ bool Snake::move() {
 
         case GROWTH:
             grow(dx, dy);
-
+            scoreBoard-> addGrowth();
             // sb에 growth 전달 -> sb.addGrowth()
             break;
 
         case POISON:
             grow(dx, dy);
             decrease();
-            decrease();
-            
+            if(shield) shield = false;
+            else decrease(); // poison 먹으면 길이 2칸 줄어듬, shield 있으면 1칸만 줄어듬
+            scoreBoard->addPoison();
             // sb에 posion 전달 -> sb.addPoison()
             break;
 
@@ -92,8 +95,16 @@ bool Snake::move() {
 
             grow(next_r, next_c);
             decrease();
+            scoreBoard->addGateCnt();
             break;
         }
+
+        case SHIELD: 
+            shield = true;
+            grow(dx, dy);
+            decrease();
+            break;
+        
 
         default:
             break;
