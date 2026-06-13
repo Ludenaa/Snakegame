@@ -53,7 +53,7 @@ void Item::ApplyItem(Snake& snake, ScoreBoard& score){
             score.addPoison();
             break;
     /*  case ItemType::Shield:
-            snake.activeShield();
+            snake.nowShield();
             score.addSheild();  */
     }
     active_items.erase(active_items.begin() + item_idx); //리스트에서 제거
