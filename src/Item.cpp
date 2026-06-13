@@ -14,7 +14,7 @@ void Item::CreateItem(const Map& map){
     } while (!map.is_empty(x,y));
 
     int rand_val = rand() % 3;
-    if(rand_val == 0) item.type = ItemType::Grouth;
+    if(rand_val == 0) item.type = ItemType::Growth;
     else if (rand_val == 1) item.type = ItemType::Poison;
     else item.type = ItemType::Shield;
 
