@@ -6,12 +6,13 @@
 #include "Map.hpp"
 #include <ncurses.h>
 #include <iostream>
+#include <chrono>
 
 enum class ItemType
 {
-    Growth,
-    Poison,
-    Shield   
+    Growth = 5,
+    Poison = 6,
+    Shield = 8   
 };
 
 struct ItemInfo
@@ -27,7 +28,6 @@ class Item
 private:
     const int max_num = 3; //조건 아이템수는 최대 3
     std::vector<ItemInfo> active_items;
-    int item_idx;
 
 public:
     Item();
