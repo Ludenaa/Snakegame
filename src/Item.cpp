@@ -13,8 +13,10 @@ void Item::CreateItem(const Map& map){
         y = rand() % 20 + 1;
     } while (!map.is_empty(x,y));
 
-    item.type = (rand() % 2 == 1) ? ItemType::Growth : ItemType::Poison; 
-    // 1이면 Growth 0이면 Poison
+    int rand_val = rand() % 3;
+    if(rand_val == 0) item.type = ItemType::Grouth;
+    else if (rand_val == 1) item.type = ItemType::Poison;
+    else item.type = ItemType::Shield;
 
     item.position = {x,y}; //아이템 위치 저장 x,y순서
     item.time =  100; // 임시 시간 지정
@@ -50,6 +52,9 @@ void Item::ApplyItem(Snake& snake, ScoreBoard& score){
             // score.add_poison();
             score.addPoison();
             break;
+    /*  case ItemType::Shield:
+            snake.activeShield();
+            score.addSheild();  */
     }
     active_items.erase(active_items.begin() + item_idx); //리스트에서 제거
     item_idx = -1; // 초기화
