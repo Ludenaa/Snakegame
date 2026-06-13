@@ -30,12 +30,9 @@ Snake::~Snake() {}
 
 /**
  * @brief 뱀의 이동 방향 변경
- *        반대 방향 입력 시 무시
+ *        반대 방향 입력 시 게임 오버
  */
 void Snake::changeDirection(int nextdir) {
-    // 반대 방향: 현재 방향과 합이 2(상-하) 또는 합이 4(좌-우)
-    int opposite = (dir + 2) % 4;
-    if (nextdir == opposite) return;
     dir = nextdir;
 }
 
@@ -73,9 +70,11 @@ bool Snake::move() {
         case POISON:
             grow(dx, dy);
             decrease();
-            if(shield) shield = false;
-            else decrease(); // poison 먹으면 길이 2칸 줄어듬, shield 있으면 1칸만 줄어듬
-            scoreBoard->addPoison();
+            if(shield)shield = false;
+            else {
+                decrease(); // poison 먹으면 길이 2칸 줄어듬, shield 있으면 1칸만 줄어듬
+                scoreBoard->addPoison();
+            }
             // sb에 posion 전달 -> sb.addPoison()
             break;
 
