@@ -3,7 +3,7 @@
 Item::Item() {}
 Item::~Item() {}    
 
-void Item::CreateItem(const Map& map){
+void Item::CreateItem(Map& map){
     if(active_items.size() >= max_num) return; // 조건 : 동시에 최대 3개 존재
 
     ItemInfo item;
@@ -16,8 +16,8 @@ void Item::CreateItem(const Map& map){
 
     item.position = empty_block; //아이템 위치 저장 x,y순서
     item.time =  100; // 임시 시간 지정
-
     active_items.push_back(item);
+    map.setItem(item.position.first, item.position.second, static_cast<int>(item.type));
 }
 
 bool Item::TakeItem(const Snake& snake, const Map& map){
