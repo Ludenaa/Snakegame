@@ -54,7 +54,9 @@ void Item::ApplyItem(Snake& snake, ScoreBoard& score){
             break;
     /*  case ItemType::Shield:
             snake.nowShield();
-            score.addSheild();  */
+            score.addSheild(); 
+            break;                */
+            
     }
     active_items.erase(active_items.begin() + item_idx); //리스트에서 제거
     item_idx = -1; // 초기화
