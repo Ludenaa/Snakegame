@@ -20,21 +20,23 @@ void Item::CreateItem(Map& map){
     map.setItem(item.position.first, item.position.second, static_cast<int>(item.type));
 }
 
-bool Item::TakeItem(const Snake& snake, const Map& map){
-    std::pair<int, int> snake_head = snake.getHead(); // 정보받아옴
-    
-    int snake_x = snake_head.first;
-    int snake_y = snake_head.second;
-    for(int i = 0; i < active_items.size(); i++){ // 아이템이랑 비교
-        int item_x = active_items[i].position.first;
-        int item_y = active_items[i].position.second;
-
-        if (snake_x == item_x && snake_y == item_y) {item_idx = i; return true;}
+void Item::removeExpiredItems(Map& map) { // 기간이 지난 아이템 맵 삭제 
+    auto now = std::chrono::steady_clock::now();
+    for (auto it = active_items.begin(); it != active_items.end(); ) {
+        int time = std::chrono::duration_cast<std::chrono::seconds>(now - it->spawn_time).count();
+        if (time >= 10) {
+            map.map[it->position.first][it->position.second] = 0;
+            it = active_items.erase(it); // 리스트에서 지우기
+        } else {
+            ++it;
+        }
     }
-    return false;
 }
-
-void Item::deleteItem(){
-    active_items.erase(active_items.begin() + item_idx); //리스트에서 제거
-    item_idx = -1; // 초기화
+void Item::clearItem(int x, int y) { // 먹은 아이템 리스트에서 삭제 
+    for (auto it = active_items.begin(); it != active_items.end(); ++it) {
+        if (it->position.first == x && it->position.second == y) {
+            active_items.erase(it);
+            return;
+        }
+    }
 }
