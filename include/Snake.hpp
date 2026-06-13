@@ -31,7 +31,7 @@ public:
     bool move();
     void grow(int x, int y);
     void decrease();
-    void nowShield(){has_shield = true;}
+    void isShield(){has_shield = true;}
     bool getShieldStatus()const{return has_shield;}
 
     std::pair<int,int> getHead() const { return {body.back().first, body.back().second}; }
