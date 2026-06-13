@@ -81,7 +81,9 @@ bool Snake::move() {
             int exit_dir;
             gate->getExitInfo({dx, dy}, dir, exit_pos, exit_dir);
 
-            changeDirection(exit_dir);
+            //github 이슈#3
+            // changeDirection(exit_dir);
+            dir = exit_dir;
 
             // 게이트 위치에서 진출 방향으로 한 칸 이동한 위치
             // 게이트 자체에서 구현하려고 했는데 여기가 더 깔끔해서 여기서 +1 할게
