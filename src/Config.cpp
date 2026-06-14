@@ -8,15 +8,15 @@ GameConfig makeConfig(Difficulty d) {
     switch (d) {
         case Difficulty::Easy:
             // Easy : 1번 맵, 루프 간격 200ms, 미션 스코어 조건, 맵 사이즈 21x21
-            return { d, 1, 200, {1, 0,}, {21, 21} };
+            return { d, 1, 200, {4, 0,}, {21, 21} };
             
         case Difficulty::Normal:
             // Normal : 2번 맵, 루프 간격 150ms, 미션 스코어 조건, 맵 사이즈 25x25
-            return { d, 2, 150, {1, 0,}, {25, 25} };
+            return { d, 2, 150, {4, 0,}, {25, 25} };
             
         case Difficulty::Hard:
             // Hard : 3번 맵, 루프 간격 100ms, 미션 스코어 조건, 맵 사이즈 31x31
-            return { d, 3, 100, {1, 0,}, {31, 31} };
+            return { d, 3, 100, {4, 0,}, {31, 31} };
         case Difficulty::Extreme:
             // Extreme : 4번 맵, 루프 간격 80ms, 미션 스코어 조건, 맵 사이즈 31x31
             return { d, 4, 80, {4, 0,}, {35, 35} };
