@@ -13,17 +13,10 @@
 #include <utility> // std::pair 사용을 위해 추가
 #include "Config.hpp"  // ⭐ 추가
 
-<<<<<<< HEAD
-Map::Map(const GameConfig& config) {
-    map_num = config.map_num;
+Map::Map(const GameConfig& config) : force_redraw(true), prev_shielded(false){
+    map_num = config.map_num;         // ⭐ 로드할 맵 번호 (loadMapFile에서 파일명 생성에 사용)
     width = config.map_size.width;    // ⭐ Config의 가로 크기 참조
     height = config.map_size.height;  // ⭐ Config의 세로 크기 참조
-    force_redraw = true;
-=======
-Map::Map(int map_num) : map_num(map_num), force_redraw(true), prev_shielded(false){
-    width = MAP_SIZES[map_num][0];
-    height = MAP_SIZES[map_num][1];
->>>>>>> fdfc1d2 (색상 추가)
     loadMapFile();
 }
 
