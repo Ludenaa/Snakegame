@@ -72,6 +72,7 @@ const char* difficultyName(Difficulty d) {
         case Difficulty::Easy:   return "Easy";
         case Difficulty::Normal: return "Normal";
         case Difficulty::Hard:   return "Hard";
+        case Difficulty::Extreme: return "Extreme";
     }
     return "Unknown";
 }
@@ -187,8 +188,8 @@ int main() {
     keypad(stdscr, TRUE);
     refresh();
 
-    // 난이도 진행 순서: 쉬움 → 보통 → 어려움
-    const Difficulty stages[] = { Difficulty::Easy, Difficulty::Normal, Difficulty::Hard };
+    // 난이도 진행 순서: 쉬움 → 보통 → 어려움 → 최종 
+    const Difficulty stages[] = { Difficulty::Easy, Difficulty::Normal, Difficulty::Hard, Difficulty::Extreme };
     const int stage_count = sizeof(stages) / sizeof(stages[0]);
 
     bool cleared_all = true; // 모든 스테이지를 클리어했는지 여부
