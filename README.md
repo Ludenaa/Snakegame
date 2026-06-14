@@ -13,9 +13,7 @@
 | OS | Linux (Ubuntu/Debian 기준), macOS |
 | 언어 | C++17 |
 | 빌드 | CMake 3.10 이상, Make, g++ |
-| 의존성 | ncursesw (와이드 문자 출력용 ncurses) |
-
-> 유니코드 블록 문자(■) 출력을 위해 일반 `ncurses`가 아닌 **와이드 버전(`ncursesw`)**이 필요합니다.
+| 의존성 | ncursesw |
 
 ---
 
@@ -193,7 +191,7 @@ Snakegame/
 | 이명준 (팀장) | Snake |
 | 이지형 | Map |
 | 정재운 | Item |
-| 정원우 | ScoreBoard, Gate, 빌드 구성(CMake/build), 프로젝트 구조 |
+| 정원우 | ScoreBoard, Gate, 빌드 구성(CMake/build) |
 
 ---
 
