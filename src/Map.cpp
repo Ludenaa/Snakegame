@@ -12,11 +12,7 @@
 #include <cstdlib> // rand() 사용을 위해 추가
 #include <utility> // std::pair 사용을 위해 추가
 
-// [성능 최적화] 이전 프레임의 맵 상태를 기록하여 변경된 부분만 그리기 위한 버퍼
-static int prev_map[100][100];
-static bool force_redraw = true; // 맵이 처음 로드되거나 변경되었을 때 전체 화면을 새로고침하기 위한 플래그
-
-Map::Map(int map_num) : map_num(map_num){
+Map::Map(int map_num) : map_num(map_num), force_redraw(true){
     width = MAP_SIZES[map_num][0];
     height = MAP_SIZES[map_num][1];
     loadMapFile();
@@ -68,7 +64,7 @@ bool Map::loadMapFile(){
 /**
  * @brief 누수 및 프리징 해결을 위한 최적화된 렌더링 로직 (Double Buffering 기법 적용)
  */
-bool Map::render() const{
+bool Map::render(){
     if (force_redraw) {
         clear(); // ncurses 전체 화면 지우기
         for (int i = 0; i < 100; i++) {

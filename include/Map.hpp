@@ -30,6 +30,12 @@ private:
     int height;
     int map_num;
 
+    // [성능 최적화]
+    // 이전 프레임의 맵 상태를 기록하여 변경된 칸만 다시 그리기 위한 버퍼
+    int prev_map[100][100];
+    // 맵이 처음 로드되거나 변경되었을 때 전체 화면을 강제로 새로고침하기 위한 플래그
+    bool force_redraw;
+
     bool loadMapFile();
 
 public:
@@ -37,7 +43,7 @@ public:
     int map[100][100];
 
     void mapClear();
-    bool render() const;
+    bool render();
 
     int getWidth() const;
     int getHight() const;
