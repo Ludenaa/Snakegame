@@ -189,7 +189,7 @@ StageOutcome playStage(const GameConfig& config) {
     /* 객체 생성 순서 주의: Gate → Snake 순서로 생성 */
     Map map(config);
     ScoreBoard sb(8, 30, 0, config.map_size.width * 2 + 4, config); //맵은 한 칸당 2문자폭(블록+공백)으로 출력하므로 *2
-    Gate gate(map, config.map_size.height, config.map_size.width);
+    Gate gate(map.map, config.map_size.height, config.map_size.width);
     Snake snk(10, 10, 3, 1, map.map, &gate, &sb);
     Item item;
 
