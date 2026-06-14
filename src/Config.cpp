@@ -4,51 +4,31 @@
  */
 #include "Config.hpp"
 
-// GameConfig makeConfig(Difficulty d) {
-//     switch (d) {
-//         case Difficulty::Easy:
-//             // Easy : 1번 맵, 루프 간격 200ms, 미션 스코어 조건, 맵 사이즈 21x21
-//             return { d, 1, 200, {10, 5, 2, 1}, {21, 21} };
-            
-//         case Difficulty::Normal:
-//             // Normal : 2번 맵, 루프 간격 150ms, 미션 스코어 조건, 맵 사이즈 25x25
-//             return { d, 2, 150, {15, 8, 3, 5}, {25, 25} };
-            
-//         case Difficulty::Hard:
-//             // Hard : 3번 맵, 루프 간격 100ms, 미션 스코어 조건, 맵 사이즈 31x31
-//             return { d, 3, 100, {20, 10, 5, 10}, {31, 31} };
-//         case Difficulty::Extreme:
-//             // Extreme : 4번 맵, 루프 간격 80ms, 미션 스코어 조건, 맵 사이즈 31x31
-//             return { d, 4, 80, {25, 10, 10, 20}, {35, 35} };
-            
-//         default:
-//             // 예외 처리 구조 (디폴트 Easy 지정)
-//             return { d, 1, 200, {1, 1, 1, 1}, {21, 21} };
-//     }
-// }
-
-
-
-//디버깅용
+```
 GameConfig makeConfig(Difficulty d) {
     switch (d) {
         case Difficulty::Easy:
             // Easy : 1번 맵, 루프 간격 200ms, 미션 스코어 조건, 맵 사이즈 21x21
-            return { d, 1, 200, {4, 0,}, {21, 21} };
+            // 목표 : 튜토리얼 처럼 느낄 수 있는 간단한 난이도
+            return { d, 1, 200, {5, 2, 2, 2}, {21, 21} };
             
         case Difficulty::Normal:
             // Normal : 2번 맵, 루프 간격 150ms, 미션 스코어 조건, 맵 사이즈 25x25
-            return { d, 2, 150, {4, 0,}, {25, 25} };
+            // 목표 : 간단한 도전, 길이의 한계 체험
+            return { d, 2, 170, {15, 1, 1, 15}, {25, 25} };
             
         case Difficulty::Hard:
             // Hard : 3번 맵, 루프 간격 100ms, 미션 스코어 조건, 맵 사이즈 31x31
-            return { d, 3, 100, {4, 0,}, {31, 31} };
+            // 목표 : 어려운 도전, 독을 최대한 많이 맛보기
+            return { d, 3, 130, {5, 5, 10, 5}, {31, 31} };
         case Difficulty::Extreme:
             // Extreme : 4번 맵, 루프 간격 80ms, 미션 스코어 조건, 맵 사이즈 31x31
-            return { d, 4, 80, {4, 0,}, {35, 35} };
+            // 목표 : 챌린저, 미션 난이도 및 속도 전반적인 상향
+            return { d, 4, 80, {25, 25, 25, 25}, {35, 35} };
             
         default:
             // 예외 처리 구조 (디폴트 Easy 지정)
             return { d, 1, 200, {1, 1, 1, 1}, {21, 21} };
     }
 }
+```
