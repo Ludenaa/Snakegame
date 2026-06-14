@@ -13,11 +13,17 @@
 #include <utility> // std::pair 사용을 위해 추가
 #include "Config.hpp"  // ⭐ 추가
 
+<<<<<<< HEAD
 Map::Map(const GameConfig& config) {
     map_num = config.map_num;
     width = config.map_size.width;    // ⭐ Config의 가로 크기 참조
     height = config.map_size.height;  // ⭐ Config의 세로 크기 참조
     force_redraw = true;
+=======
+Map::Map(int map_num) : map_num(map_num), force_redraw(true), prev_shielded(false){
+    width = MAP_SIZES[map_num][0];
+    height = MAP_SIZES[map_num][1];
+>>>>>>> fdfc1d2 (색상 추가)
     loadMapFile();
 }
 
@@ -67,7 +73,13 @@ bool Map::loadMapFile(){
 /**
  * @brief 누수 및 프리징 해결을 위한 최적화된 렌더링 로직 (Double Buffering 기법 적용)
  */
-bool Map::render(){
+bool Map::render(bool snake_shielded){
+    // 실드 상태가 바뀌면 뱀 색상이 달라지므로, 이미 그려진 뱀 칸까지 모두 다시 그리도록 강제 새로고침
+    if (snake_shielded != prev_shielded) {
+        force_redraw = true;
+        prev_shielded = snake_shielded;
+    }
+
     if (force_redraw) {
         clear(); // ncurses 전체 화면 지우기
         for (int i = 0; i < MAP_SIZE; i++) {
@@ -84,19 +96,31 @@ bool Map::render(){
             
             // 현재 맵 상태가 이전 프레임과 다를 때만 해당 칸을 찾아가서 갱신
             if (map[i][j] != prev_map[i][j]) {
-                move(i, j * 2); // ncurses는 move(y, x) 형식을 취하므로 move(행, 열*2)가 정확합니다.
-                
-                switch (TileType(map[i][j])) {
-                    case EMPTY:       printw(". "); break;
-                    case WALL:        printw("# "); break;
-                    case IMMUNE_WALL: printw("X "); break;
-                    case SNAKE_HEAD:  printw("H "); break;
-                    case SNAKE_BODY:  printw("B "); break;
-                    case GROWTH:      printw("G "); break;
-                    case POISON:      printw("P "); break;
-                    case GATE:        printw("O "); break;
-                    case SHIELD:      printw("S "); break; // ⭐ 실드 아이템 스폰 시 화면에 'S ' 출력 추가
-                    default:          printw("? "); break;
+                move(i, j * 2); // ncurses는 move(y, x) 형식. 한 칸당 2문자폭(블록+공백)으로 출력
+
+                int tile = map[i][j];
+
+                if (tile == EMPTY) {
+                    // 빈 칸은 두 칸 공백으로 비움
+                    printw("  ");
+                } else {
+                    // 색상 페어 번호 = TileType 값(1~8). 단, 실드 보유 시 뱀은 전용 색으로 표시
+                    int pair_id = tile;
+                    if ((tile == SNAKE_HEAD || tile == SNAKE_BODY) && snake_shielded) {
+                        pair_id = SNAKE_SHIELD_PAIR;
+                    }
+
+                    // 머리·아이템·게이트는 굵게 하여 더 밝게 강조
+                    int attr = COLOR_PAIR(pair_id);
+                    if (tile == SNAKE_HEAD || tile == GROWTH || tile == POISON ||
+                        tile == GATE || tile == SHIELD) {
+                        attr |= A_BOLD;
+                    }
+
+                    // 모든 오브젝트(벽/아이템/뱀/게이트)를 색이 있는 네모(■) 블록 + 공백으로 표시(칸 간격)
+                    attron(attr);
+                    addwstr(L"■ "); // ■ (U+25A0 BLACK SQUARE) 뒤에 공백 한 칸
+                    attroff(attr);
                 }
                 prev_map[i][j] = map[i][j];
             }

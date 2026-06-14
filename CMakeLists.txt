@@ -25,6 +25,8 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 # 8. 시스템 내에 ncurses 라이브러리가 설치되어 있는지 확인합니다.
 # REQUIRED는 이 라이브러리가 없으면 빌드를 중단하라는 뜻입니다.
+# 유니코드(■ 등 와이드 문자) 출력을 위해 ncursesw(와이드 버전)를 사용합니다.
+set(CURSES_NEED_WIDE TRUE)
 find_package(Curses REQUIRED)
 
 # 9. ncurses의 헤더 파일 경로를 컴파일러에게 알려줍니다.

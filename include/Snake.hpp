@@ -44,4 +44,7 @@ public:
 
     // 뱀이 게이트를 통과하는 중인지 여부
     int isPassinggate() const;
+
+    // 실드 아이템 보유 여부
+    bool hasShield() const { return shield; }
 };

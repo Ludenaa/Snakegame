@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
+#include <clocale>   // setlocale: 유니코드(■) 출력을 위한 로케일 설정
 
 #include "ScoreBoard.hpp"
 #include "Snake.hpp"
@@ -110,8 +111,13 @@ void showStageTransition(Difficulty next) {
  */
 StageResult playStage(const GameConfig& config) {
     /* 객체 생성 순서 주의: Gate → Snake 순서로 생성 */
+<<<<<<< HEAD
     Map map(config); //config 래퍼로 받아서 내부에서 사용 바랍니다!
     ScoreBoard sb(8, 30, 0, config.map_size.width * 2 + 4, config); //맵 출력할때 (문자+1)씩 출력함 그래서 *2
+=======
+    Map map(config.map_num); //config 래퍼로 받아서 내부에서 사용 바랍니다!
+    ScoreBoard sb(8, 30, 0, config.map_size.width * 2 + 4, config); //맵은 한 칸당 2문자폭(블록+공백)으로 출력하므로 *2
+>>>>>>> fdfc1d2 (색상 추가)
     Gate gate(map.map, config.map_size.height, config.map_size.width);
     Snake snk(10, 10, 3, 1, map.map, &gate, &sb);
     Item item;
@@ -119,7 +125,7 @@ StageResult playStage(const GameConfig& config) {
     // 이전 스테이지 화면 잔상 제거 후 초기 렌더링
     clear();
     refresh();
-    map.render();
+    map.render(snk.hasShield());
     sb.render();
 
     //게임 시간 기록(점수 측정및 게이트 생성 타이밍용)
@@ -165,7 +171,7 @@ StageResult playStage(const GameConfig& config) {
 
         sb.updateSurvivalTime(); //생존 시간 업데이트
 
-        map.render();
+        map.render(snk.hasShield());
         sb.render();
 
         // 미션 달성 시 현재 스테이지 클리어
@@ -177,8 +183,43 @@ StageResult playStage(const GameConfig& config) {
 }
 
 
+/**
+ * @brief 타일 종류별 색상 페어 설정
+ *        페어 번호로 TileType 값(1~8)을 그대로 사용하여
+ *        Map::render()에서 COLOR_PAIR(타일값)으로 바로 적용 가능
+ */
+void initColors() {
+    start_color();
+    use_default_colors();      // 배경(-1)은 터미널 기본색 사용
+
+    // 256색을 지원하면 세련된 색상을, 아니면 기본 8색으로 자동 대체
+    const bool hi = (COLORS >= 256);
+    const short c_wall   = COLOR_WHITE;                 // 벽       : 흰색
+    const short c_immune = hi ? 244 : COLOR_RED;        // 통과불가벽: 회색
+    const short c_body   = hi ?  34 : COLOR_GREEN;      // 뱀 몸통  : 초록
+    const short c_head   = hi ?  46 : COLOR_GREEN;      // 뱀 머리  : 밝은 초록
+    const short c_growth = hi ? 196 : COLOR_RED;        // 성장     : 빨강
+    const short c_poison = hi ?  93 : COLOR_MAGENTA;    // 독       : 보라
+    const short c_gate   = hi ?  45 : COLOR_CYAN;       // 게이트   : 청록
+    const short c_shield = hi ?  33 : COLOR_BLUE;       // 실드     : 파랑
+    const short c_ssnake = hi ? 117 : COLOR_CYAN;       // 실드 보유 뱀: 하늘색
+
+    init_pair(WALL,        c_wall,   -1);
+    init_pair(IMMUNE_WALL, c_immune, -1);
+    init_pair(SNAKE_HEAD,  c_head,   -1);
+    init_pair(SNAKE_BODY,  c_body,   -1);
+    init_pair(GROWTH,      c_growth, -1);
+    init_pair(POISON,      c_poison, -1);
+    init_pair(GATE,        c_gate,   -1);
+    init_pair(SHIELD,      c_shield, -1);
+
+    init_pair(SNAKE_SHIELD_PAIR, c_ssnake, -1); // 실드 보유 시 뱀 색상(평소 초록 → 하늘색)
+}
+
 int main() {
     srand(time(0)); // Gate spawn, Item 위치 랜덤 시드
+
+    setlocale(LC_ALL, ""); // 유니코드 블록(■) 출력을 위해 터미널 로케일 적용(initscr 이전 호출)
 
     // ncurses 초기화 (게임 전체에서 1회만 수행)
     initscr();
@@ -186,6 +227,7 @@ int main() {
     noecho();   // 방향키 외 입력이 화면에 찍혀 맵이 깨지는 것 방지
     curs_set(0);
     keypad(stdscr, TRUE);
+    if (has_colors()) initColors();   // 색상 지원 터미널이면 색상 활성화
     refresh();
 
     // 난이도 진행 순서: 쉬움 → 보통 → 어려움 → 최종 

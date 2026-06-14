@@ -14,6 +14,9 @@
 // 맵 배열의 한 변 크기(고정). Map의 map 배열과 Snake/Gate가 받는 배열 포인터에 공통 사용
 constexpr int MAP_SIZE = 100;
 
+// 실드 보유 시 뱀에 적용할 색상 페어 번호 (TileType 값 1~8과 겹치지 않게 9 사용)
+constexpr int SNAKE_SHIELD_PAIR = 9;
+
 enum TileType {
     EMPTY = 0,
     WALL = 1,
@@ -40,6 +43,8 @@ private:
     int prev_map[MAP_SIZE][MAP_SIZE];
     // 맵이 처음 로드되거나 변경되었을 때 전체 화면을 강제로 새로고침하기 위한 플래그
     bool force_redraw;
+    // 직전 프레임의 실드 상태. 값이 바뀌면 뱀 색이 달라지므로 전체 재렌더링이 필요
+    bool prev_shielded;
 
     bool loadMapFile();
 
@@ -50,7 +55,7 @@ public:
     int map[MAP_SIZE][MAP_SIZE];
 
     void mapClear();
-    bool render();
+    bool render(bool snake_shielded);
 
     int getWidth() const;
     int getHeight() const;
