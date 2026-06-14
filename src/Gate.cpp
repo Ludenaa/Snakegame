@@ -1,6 +1,10 @@
 /**
  * @file Gate.cpp
  * @brief Gate 클래스 - 벽 위 게이트 쌍 생성/제거, 진입 시 반대편 게이트로의 진출 좌표·방향 계산
+ *
+ * 맵 접근 규칙 (const 정확성 확보):
+ *  - 읽기(const 함수) : constArr()[r][c]  → const 뷰로 접근하여 읽기 전용 보장
+ *  - 쓰기(spawn/remove): arr[r][c] = 값    → 비-const 함수에서만 맵을 직접 수정
  */
 #include "Gate.hpp"
 #include <cstdlib>
@@ -11,15 +15,14 @@ Gate::Gate(int (*p)[MAP_SIZE], int height, int width)
       gate_a({-1,-1}), gate_b({-1,-1}), is_active(false) {}
 
 
-
 /**
- * @brief Wall 타일 좌표 목록 수집
+ * @brief Wall 타일 좌표 목록 수집 (읽기 전용 → const 뷰 사용)
  */
 std::vector<std::pair<int,int>> Gate::collectWalls() const {
     std::vector<std::pair<int,int>> walls;
     for (int i = 0; i < map_height; i++) {
         for (int j = 0; j < map_width; j++) {
-            if (arr[i][j] == WALL) {
+            if (constArr()[i][j] == WALL) {
                 walls.push_back({i, j});
             }
         }
@@ -29,7 +32,7 @@ std::vector<std::pair<int,int>> Gate::collectWalls() const {
 
 
 /**
- * @brief 랜덤한 Wall 위치 두 곳에 게이트 쌍 생성
+ * @brief 랜덤한 Wall 위치 두 곳에 게이트 쌍 생성 (쓰기 → 비-const 함수에서 직접 수정)
  */
 void Gate::spawn() {
     // 기존 게이트 제거
@@ -55,7 +58,7 @@ void Gate::spawn() {
 
 
 /**
- * @brief 게이트 제거 후 Wall로 복원
+ * @brief 게이트 제거 후 Wall로 복원 (쓰기 → 비-const 함수에서 직접 수정)
  */
 void Gate::remove() {
     if (!is_active) return;
@@ -84,13 +87,13 @@ int Gate::getWallDirection(std::pair<int,int> pos) const {
 
     // 내부 벽: 빈 공간 쪽으로 진출
     // 상하좌우 중 EMPTY인 방향 반환
-    int dr[4] = {-1, 0, 1, 0};
-    int dc[4] = {0, 1, 0, -1};
+    const int dr[4] = {-1, 0, 1, 0};
+    const int dc[4] = {0, 1, 0, -1};
     for (int d = 0; d < 4; d++) {
         int nr = r + dr[d];
         int nc = c + dc[d];
         if (nr >= 0 && nr < map_height && nc >= 0 && nc < map_width) {
-            if (arr[nr][nc] == EMPTY) return d;
+            if (constArr()[nr][nc] == EMPTY) return d;
         }
     }
     return 2; // fallback
@@ -119,8 +122,8 @@ int Gate::getCornerExitDirection(std::pair<int,int> exit_gate, int entry_dir) co
     int counter_clock = (entry_dir + 3) % 4;
     int opposite      = (entry_dir + 2) % 4;
 
-    int dr[4] = {-1, 0, 1, 0};
-    int dc[4] = {0, 1, 0, -1};
+    const int dr[4] = {-1, 0, 1, 0};
+    const int dc[4] = {0, 1, 0, -1};
     int r = exit_gate.first;
     int c = exit_gate.second;
 
@@ -129,7 +132,8 @@ int Gate::getCornerExitDirection(std::pair<int,int> exit_gate, int entry_dir) co
         int nr = r + dr[candidate];
         int nc = c + dc[candidate];
         if (nr >= 0 && nr < map_height && nc >= 0 && nc < map_width) {
-            if (arr[nr][nc] != WALL && arr[nr][nc] != IMMUNE_WALL) {
+            int tile = constArr()[nr][nc];
+            if (tile != WALL && tile != IMMUNE_WALL) {
                 return candidate;
             }
         }

@@ -16,13 +16,24 @@
  */
 class Gate {
 private:
-    int (*arr)[MAP_SIZE];   // Map의 2차원 배열 포인터
+    // 읽기 전용 맵 포인터 타입.
+    // 요소 타입이 const int 이므로, 이 포인터를 통해서는 맵을 수정할 수 없다.
+    using ConstMapPtr = const int (*)[MAP_SIZE];
+
+    int (*arr)[MAP_SIZE];   // Map의 2차원 배열 포인터 (쓰기 경로: spawn/remove)
     int map_height;
     int map_width;
 
     std::pair<int,int> gate_a;  // 게이트 A 좌표
     std::pair<int,int> gate_b;  // 게이트 B 좌표
     bool is_active;             // 게이트 활성화 여부
+
+    // const 멤버 함수에서 맵을 '읽기 전용'으로만 다루기 위한 const 뷰.
+    // raw 포인터 멤버는 const가 대상까지 전파되지 않으므로(예: const 함수
+    // 안에서도 arr[i][j] 수정이 그대로 컴파일됨), 모든 읽기 동작은 이 뷰를
+    // 거치게 한다. 반환 타입의 요소가 const 이므로 const 함수 내에서의 맵
+    // 수정이 컴파일 단계에서 차단된다.
+    ConstMapPtr constArr() const { return arr; }
 
     // 벽의 위치로 기본 진출 방향 결정 (0:상 1:우 2:하 3:좌)
     int getWallDirection(std::pair<int,int> pos) const;
