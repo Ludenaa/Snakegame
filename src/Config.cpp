@@ -4,7 +4,6 @@
  */
 #include "Config.hpp"
 
-```
 GameConfig makeConfig(Difficulty d) {
     switch (d) {
         case Difficulty::Easy:
@@ -31,4 +30,3 @@ GameConfig makeConfig(Difficulty d) {
             return { d, 1, 200, {1, 1, 1, 1}, {21, 21} };
     }
 }
-```
