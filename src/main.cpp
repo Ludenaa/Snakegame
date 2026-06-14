@@ -55,10 +55,10 @@ int collectInput(int duration_ms) {
     return last_input;
 }
 
-bool isExpired(const std::chrono::steady_clock::time_point& Last_time, const int startd_time) {
+bool isExpired(const std::chrono::steady_clock::time_point& last_time, const int threshold_sec) {
     auto now = std::chrono::steady_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - Last_time).count();
-    return elapsed >= startd_time;
+    int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - last_time).count();
+    return elapsed >= threshold_sec;
 }
 
 /**

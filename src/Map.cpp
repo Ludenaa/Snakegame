@@ -34,8 +34,8 @@ void Map::mapClear(){
 bool Map::loadMapFile(){
     // 맵 txt 파일을 읽어와 맵에 대입
     std::string filename = "../data/map" + std::to_string(map_num) + ".txt";
-    std::ifstream openFile(filename);
-    if (!openFile.is_open()) {
+    std::ifstream open_file(filename);
+    if (!open_file.is_open()) {
         std::cerr << "파일을 열 수 없습니다: " << filename << std::endl;
         return false;
     }
@@ -44,7 +44,7 @@ bool Map::loadMapFile(){
 
     std::string line;
     int i=0;
-    while (std::getline(openFile, line)) {
+    while (std::getline(open_file, line)) {
         std::vector<int> row;
         std::stringstream ss(line);
         int value;
@@ -56,7 +56,7 @@ bool Map::loadMapFile(){
         i++;
     }
 
-    openFile.close();
+    open_file.close();
     
     // 맵 파일이 새로 로드되면 이전 버퍼를 초기화하고 강제 전체 렌더링을 유도합니다.
     force_redraw = true; 

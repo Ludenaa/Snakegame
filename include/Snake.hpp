@@ -15,7 +15,7 @@ class Snake {
 private:
     std::deque<std::pair<int,int>> body;
     // 0 1 2 3 순서대로 상, 우, 하, 좌
-    int Direction[4][2] = {{-1,0},{0,1},{1,0},{0,-1}};
+    int direction[4][2] = {{-1,0},{0,1},{1,0},{0,-1}};
     // 배열 저장 포인터
     int (*arr)[MAP_SIZE];
     // Gate 포인터
@@ -27,15 +27,15 @@ private:
     // 실드 아이템 보유 여부
     bool shield;
     // 게이트 통과 중 여부
-    int passingGate;
+    int passing_gate;
     // ScoreBoard 포인터
-    ScoreBoard* scoreBoard;
+    ScoreBoard* score_board;
 
 public:
-    Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate* g, ScoreBoard* sb);
+    Snake(int x, int y, int snake_size, int first_dir, int (*p)[MAP_SIZE], Gate* g, ScoreBoard* sb);
     ~Snake();
 
-    void changeDirection(int nextdir);
+    void changeDirection(int next_dir);
     bool move();
     void grow(int x, int y);
     void decrease();
