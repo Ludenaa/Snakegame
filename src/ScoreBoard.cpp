@@ -143,7 +143,7 @@ void ScoreBoard::render() const{
 
     //mission render line
     box(mission_win, 0, 0);
-    mvwprintw(mission_win, 0, 8, "[ Mission ]"); 
+    mvwprintw(mission_win, 0, 9, "[ Mission ]"); 
     mvwprintw(mission_win, 2, 2, "B : (%d)\t(%s)", config.mission.length, (config.mission.length<=current_length) ? "V" : " ");
     mvwprintw(mission_win, 3, 2, "+ : (%d)\t(%s)", config.mission.growth, (config.mission.growth<=growth_cnt) ? "V" : " ");
     mvwprintw(mission_win, 4, 2, "- : (%d)\t(%s)", config.mission.poison, (config.mission.poison<=poison_cnt) ? "V" : " ");
