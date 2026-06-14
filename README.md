@@ -171,6 +171,173 @@ Snakegame/
 └── build/                  # (자동 생성) CMake 빌드 중간 파일
 ```
 
+### SnakeGame 클래스 다이어그램
+```mermaid
+classDiagram
+    direction LR
+ 
+    %% ===== 설정(Config) 계층 =====
+    class Difficulty {
+        <<enumeration>>
+        Easy = 1
+        Normal = 2
+        Hard = 3
+        Extreme = 4
+    }
+ 
+    class MissionGoal {
+        <<struct>>
+        +int length
+        +int growth
+        +int poison
+        +int gate
+    }
+ 
+    class MapSize {
+        <<struct>>
+        +int width
+        +int height
+    }
+ 
+    class GameConfig {
+        <<struct>>
+        +Difficulty level
+        +int map_num
+        +int tick_ms
+        +MissionGoal mission
+        +MapSize map_size
+    }
+ 
+    %% ===== 핵심 클래스 =====
+    class Map {
+        -int width
+        -int height
+        -int map_num
+        -int prev_map[100][100]
+        -bool force_redraw
+        -bool prev_shielded
+        -bool loadMapFile()
+        +int map[100][100]
+        +Map(const GameConfig& config)
+        +void mapClear()
+        +bool render(bool snake_shielded)
+        +int getWidth() const
+        +int getHeight() const
+        +bool is_empty(int x, int y) const
+        +pair getRandomEmptyPosition() const
+        +void setItem(int r, int c, int item_type)
+        +void clearItem(int r, int c)
+    }
+ 
+    class Snake {
+        -deque~pair~ body
+        -int Direction[4][2]
+        -int* arr
+        -Gate* gate
+        -int dir
+        -int dx, dy
+        -bool shield
+        -int passingGate
+        -ScoreBoard* scoreBoard
+        +Snake(x, y, size, dir, arr, Gate*, ScoreBoard*)
+        +void changeDirection(int nextdir)
+        +bool move()
+        +void grow(int x, int y)
+        +void decrease()
+        +pair getHead() const
+        +int isPassinggate() const
+        +bool hasShield() const
+    }
+ 
+    class Gate {
+        -int* arr
+        -int map_height
+        -int map_width
+        -pair gate_a
+        -pair gate_b
+        -bool is_active
+        -ConstMapPtr constArr() const
+        -int getWallDirection(pair) const
+        -bool isCorner(pair) const
+        -int getCornerExitDirection(...) const
+        -vector collectWalls() const
+        +Gate(arr, height, width)
+        +void spawn()
+        +void remove()
+        +void getExitInfo(entry, dir, out exit, out dir) const
+        +bool getIsActive() const
+        +pair getGateA() const
+        +pair getGateB() const
+    }
+ 
+    class Item {
+        -const int max_num = 3
+        -vector~ItemInfo~ active_items
+        +Item()
+        +void CreateItem(Map& map, Difficulty level)
+        +void removeExpiredItems(Map& map)
+        +void clearItem(int x, int y)
+        +const vector getItemsInfo() const
+    }
+ 
+    class ItemInfo {
+        <<struct>>
+        +pair position
+        +ItemType type
+        +time_point spawn_time
+    }
+ 
+    class ItemType {
+        <<enumeration>>
+        Growth = 5
+        Poison = 6
+        Shield = 8
+    }
+ 
+    class ScoreBoard {
+        -WINDOW* scoreboard_win
+        -WINDOW* mission_win
+        -int current_length
+        -int max_length
+        -int growth_cnt
+        -int poison_cnt
+        -int gate_cnt
+        -const GameConfig& config
+        -int survival_time
+        -time_point start_time
+        -time_point end_time
+        +ScoreBoard(h, w, y, x, const GameConfig&)
+        +void addGrowth()
+        +void addPoison(bool shielded)
+        +void addGateCnt()
+        +void resetScore()
+        +void render() const
+        +void updateSurvivalTime()
+        +bool completeMission() const
+        +int getSurvivalTime() const
+        +int getMaxLength() const
+    }
+ 
+    %% ===== 관계 =====
+    GameConfig *-- MissionGoal : 포함
+    GameConfig *-- MapSize : 포함
+    GameConfig --> Difficulty : 사용
+ 
+    Map ..> GameConfig : 생성자 의존
+    ScoreBoard o-- GameConfig : const& 참조 보유
+ 
+    Gate ..> Map : map 배열 포인터 조작
+ 
+    Snake --> Gate : Gate* 보유
+    Snake --> ScoreBoard : ScoreBoard* 보유
+    Snake ..> Map : map 배열 포인터 사용
+ 
+    Item ..> Map : CreateItem/removeExpired
+    Item ..> Difficulty : 난이도별 생성
+    Item *-- ItemInfo : 컴포지션(vector)
+    ItemInfo --> ItemType : 사용
+```
+
 ### 클래스 구성
 
 | 클래스 | 역할 |
