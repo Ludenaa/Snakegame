@@ -18,9 +18,7 @@ struct WinSize{
 class ScoreBoard {
 private:
     WINDOW* scoreboard_win;     // ScoreBoard 윈도우 포인터
-    WinSize scoreboard_size;   //ScoreBoard의 사이즈 정보
     WINDOW* mission_win;        // Mission 윈도우 포인터
-    WinSize mission_size;      //Mission의 사이즈 정보
 
 
     //점수 관련
@@ -42,6 +40,12 @@ public:
     // 생성자 및 소멸자
     ScoreBoard(int h, int w, int y, int x, const GameConfig& config);
     ~ScoreBoard();
+
+
+    // double-free 차단
+    // 복사를 delete하면 이동 생성자도 자동으로 생성되지 않으니(암묵 삭제) 추가 처리 불필요
+    ScoreBoard(const ScoreBoard&) = delete;
+    ScoreBoard& operator=(const ScoreBoard&) = delete;
 
     
     //adders

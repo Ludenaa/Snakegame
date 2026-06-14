@@ -5,6 +5,7 @@
 #pragma once
 
 #include <utility>
+#include <vector>
 #include "Map.hpp"   // MAP_SIZE, TileType 정의 사용
 
 /**

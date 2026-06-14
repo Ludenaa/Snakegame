@@ -3,16 +3,26 @@
  * @brief 게임 점수판과 미션 상태를 관리하는 ScoreBoard 클래스 구현
  */
 
-#include <chrono>
 #include "ScoreBoard.hpp"
 #include "Config.hpp"
+
+#include <chrono>
+#include <cassert>
 
 /**
  * @brief 윈도우 높이:h, 윈도우 너비:w, Y 좌표:y, X 좌표:x
  */
 ScoreBoard::ScoreBoard(int h, int w, int y, int x, const GameConfig& config) : config(config) {
-    scoreboard_win = newwin(h, w, y, x);    scoreboard_size = {h,w,y,x};
-    mission_win = newwin(h, w, y+10, x);    mission_size = {h, w, y+10, x};
+    // config가 참조 멤버라서 config가 sb보다 먼저 소멸하면 댕글링 참조가 될 수 있음
+    // 단 현재 구조에서는 main에서 모든 경우에서 config가 sb보다 오래 살아있으므로 문제 없다 판단
+    // 다만 안전을 위해 assert로 config의 유효성 검사 추가
+    assert(config.map_size.width > 0 && config.map_size.height > 0 
+        && config.mission.length > 0 && config.mission.growth >= 0 
+        && config.mission.poison >= 0 && config.mission.gate >= 0);
+
+    
+    scoreboard_win = newwin(h, w, y, x);    
+    mission_win = newwin(h, w, y+10, x);
     
     resetScore();
     render();

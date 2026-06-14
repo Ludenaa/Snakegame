@@ -187,9 +187,9 @@ static GameStats captureStats(const ScoreBoard& sb) {
  */
 StageOutcome playStage(const GameConfig& config) {
     /* 객체 생성 순서 주의: Gate → Snake 순서로 생성 */
-    Map map(config); //config 래퍼로 받아서 내부에서 사용 바랍니다!
+    Map map(config);
     ScoreBoard sb(8, 30, 0, config.map_size.width * 2 + 4, config); //맵은 한 칸당 2문자폭(블록+공백)으로 출력하므로 *2
-    Gate gate(map.map, config.map_size.height, config.map_size.width);
+    Gate gate(map, config.map_size.height, config.map_size.width);
     Snake snk(10, 10, 3, 1, map.map, &gate, &sb);
     Item item;
 
@@ -219,13 +219,13 @@ StageOutcome playStage(const GameConfig& config) {
 
         if((!snk.isPassinggate()) //스네이크 통과중에는 게이트 생성X(SPAWN에서 GATE 삭제도 호출하므로 SPAWN만 제어하면됨)
         && (isExpired(last_gate_spawn, 10))) {
-            // 10초마다 게이트 생성
+            // 10초마다 게이트 생성(고정)
             gate.spawn();
             last_gate_spawn = std::chrono::steady_clock::now();
         }
 
-        // 5초마다 아이템 생성
-        if(isExpired(last_item_spawn,2)){
+        // 5초마다 아이템 생성(고정)
+        if(isExpired(last_item_spawn, 5)){
             item.CreateItem(map,config.level);
             last_item_spawn = std::chrono::steady_clock::now();
         }

@@ -11,6 +11,7 @@ Gate::Gate(int (*p)[MAP_SIZE], int height, int width)
       gate_a({-1,-1}), gate_b({-1,-1}), is_active(false) {}
 
 
+
 /**
  * @brief Wall 타일 좌표 목록 수집
  */
