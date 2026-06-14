@@ -10,6 +10,9 @@
 #include <string>
 #include <utility> // std::pair 구조체 사용을 위해 추가
 
+// 맵 배열의 한 변 크기(고정). Map의 map 배열과 Snake/Gate가 받는 배열 포인터에 공통 사용
+constexpr int MAP_SIZE = 100;
+
 enum TileType {
     EMPTY = 0,
     WALL = 1,
@@ -32,7 +35,7 @@ private:
 
     // [성능 최적화]
     // 이전 프레임의 맵 상태를 기록하여 변경된 칸만 다시 그리기 위한 버퍼
-    int prev_map[100][100];
+    int prev_map[MAP_SIZE][MAP_SIZE];
     // 맵이 처음 로드되거나 변경되었을 때 전체 화면을 강제로 새로고침하기 위한 플래그
     bool force_redraw;
 
@@ -40,7 +43,7 @@ private:
 
 public:
     Map(int map_num);
-    int map[100][100];
+    int map[MAP_SIZE][MAP_SIZE];
 
     void mapClear();
     bool render();

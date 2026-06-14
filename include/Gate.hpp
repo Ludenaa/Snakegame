@@ -5,9 +5,7 @@
 #pragma once
 
 #include <utility>
-#include "Map.hpp"
-
-#define MAP_SIZE 100
+#include "Map.hpp"   // MAP_SIZE, TileType 정의 사용
 
 /**
  * @brief Gate 클래스

@@ -22,8 +22,8 @@ Map::Map(int map_num) : map_num(map_num), force_redraw(true){
  * @brief 맵 배열을 전면 초기화하는 함수
  */
 void Map::mapClear(){
-    for(int i=0; i<100; i++){
-        for(int j=0; j<100; j++){
+    for(int i=0; i<MAP_SIZE; i++){
+        for(int j=0; j<MAP_SIZE; j++){
             map[i][j] = 0;
         }
     }
@@ -67,8 +67,8 @@ bool Map::loadMapFile(){
 bool Map::render(){
     if (force_redraw) {
         clear(); // ncurses 전체 화면 지우기
-        for (int i = 0; i < 100; i++) {
-            for (int j = 0; j < 100; j++) {
+        for (int i = 0; i < MAP_SIZE; i++) {
+            for (int j = 0; j < MAP_SIZE; j++) {
                 prev_map[i][j] = -1; // 버퍼 초기화
             }
         }

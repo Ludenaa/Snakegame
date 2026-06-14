@@ -9,8 +9,7 @@
 #include <ncurses.h>
 #include "Gate.hpp"
 #include "ScoreBoard.hpp"
-
-#define MAP_SIZE 100
+#include "Map.hpp"   // MAP_SIZE 정의 사용
 
 class Snake {
 private:
