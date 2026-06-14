@@ -13,10 +13,28 @@ void Item::CreateItem(Map& map){
     ItemInfo item;
     std::pair<int, int> empty_block = map.getRandomEmptyPosition();
     
-    int rand_val = rand() % 3;
-    if(rand_val == 0) item.type = ItemType::Growth;
-    else if (rand_val == 1) item.type = ItemType::Poison;
-    else item.type = ItemType::Shield;
+    if (level == Difficulty::Easy || level == Difficulty::Normal) {
+        // 1단계, 2단계 Growth, Poison, Shield가 1:1:1 비율로 생성
+        int rand_val = rand() % 3; 
+        if(rand_val == 0) item.type = ItemType::Growth;
+        else if (rand_val == 1) item.type = ItemType::Poison;
+        else item.type = ItemType::Shield;
+    } 
+    else if (level == Difficulty::Hard) {
+        //쉴드x Growth, Poison이 1:1 비율로 생성
+        int rand_val = rand() % 2; 
+        if(rand_val == 0) item.type = ItemType::Growth;
+        else item.type = ItemType::Poison;
+    }
+    else if (level == Difficulty::Exetreme) {
+        //쉴드x Growth, Poison 1:2 비율로 생성
+        int rand_val = rand() % 3; 
+        if(rand_val == 0) {
+            item.type = ItemType::Growth;
+        } else {
+            item.type = ItemType::Poison; 
+        }
+    }
 
     item.position = empty_block; //아이템 위치 저장 x,y순서
     item.spawn_time = std::chrono::steady_clock::now();// 생성 시간 지정
