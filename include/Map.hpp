@@ -46,7 +46,7 @@ public:
     bool render();
 
     int getWidth() const;
-    int getHight() const;
+    int getHeight() const;
     
     bool is_empty(int x, int y) const { return map[x][y] == EMPTY; }
 

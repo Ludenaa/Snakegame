@@ -24,8 +24,8 @@ Snake::Snake(int x, int y, int snakesize, int firstdir, int (*p)[MAP_SIZE], Gate
     for (int i = 0; i < snakesize; i++) {
         body.push_back({dx, dy});
         arr[dx][dy] = SNAKE_BODY;
-        dx += Dirction[dir][0];
-        dy += Dirction[dir][1];
+        dx += Direction[dir][0];
+        dy += Direction[dir][1];
     }
     arr[body.back().first][body.back().second] = SNAKE_HEAD;
 }
@@ -35,7 +35,7 @@ Snake::~Snake() {}
 
 /**
  * @brief 뱀의 이동 방향 변경
- *        반대 방향 입력 시 게임 오버
+ *        반대 방향으로 입력하면 다음 move()에서 자기 몸과 충돌해 게임 오버로 처리됨
  */
 void Snake::changeDirection(int nextdir) {
     dir = nextdir;
@@ -51,8 +51,8 @@ bool Snake::move() {
         // 게이트 통과 중이면 남은 이동 수 감소
         passingGate--;
     }
-    dx = body.back().first  + Dirction[dir][0];
-    dy = body.back().second + Dirction[dir][1];
+    dx = body.back().first  + Direction[dir][0];
+    dy = body.back().second + Direction[dir][1];
 
     // 배열 범위 초과
     if (dx < 0 || dx >= MAP_SIZE || dy < 0 || dy >= MAP_SIZE) return false;
@@ -97,8 +97,8 @@ bool Snake::move() {
 
             // 게이트 위치에서 진출 방향으로 한 칸 이동한 위치
             // 게이트 자체에서 구현하려고 했는데 여기가 더 깔끔해서 여기서 +1 할게
-            int next_r = exit_pos.first  + Dirction[exit_dir][0];
-            int next_c = exit_pos.second + Dirction[exit_dir][1];
+            int next_r = exit_pos.first  + Direction[exit_dir][0];
+            int next_c = exit_pos.second + Direction[exit_dir][1];
 
             grow(next_r, next_c);
             decrease();
