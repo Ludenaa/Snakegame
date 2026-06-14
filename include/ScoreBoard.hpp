@@ -58,4 +58,10 @@ public:
     std::chrono::steady_clock::time_point getStartTime() const;
     void setEndTime();
     bool completeMission() const;
+
+    //최종 결과 집계용 getters
+    int getSurvivalTime() const;
+    int getGrowthCnt() const;
+    int getPoisonCnt() const;
+    int getMaxLength() const;
 };

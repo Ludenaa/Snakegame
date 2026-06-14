@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
+#include <cstdio>    // snprintf: 결과 화면 문자열 구성
+#include <algorithm> // std::max: 스테이지별 최대 길이 집계
 #include <clocale>   // setlocale: 유니코드(■) 출력을 위한 로케일 설정
 
 #include "ScoreBoard.hpp"
@@ -61,9 +63,29 @@ bool isExpired(const std::chrono::steady_clock::time_point& Last_time, const int
 
 /**
  * @brief 한 스테이지의 실행 결과
- *        Cleared: 미션 달성, GameOver: 사망, Quit: 사용자 종료(q)
+ *        Cleared: 미션 달성, GameOver: 사망(벽/몸 충돌, 길이 부족, q 종료 포함)
  */
-enum class StageResult { Cleared, GameOver, Quit };
+enum class StageResult { Cleared, GameOver };
+
+/**
+ * @brief 한 스테이지에서 누적할 통계(메인에서 전 스테이지 합산용)
+ *        survival_time/growth/poison 은 합산, max_length 는 최댓값으로 집계
+ */
+struct GameStats {
+    int survival_time = 0; // 생존 시간(초)
+    int growth = 0;        // 먹은 Growth(G) 개수
+    int poison = 0;        // 먹은 Poison(P) 개수
+    int max_length = 0;    // 최대 길이
+};
+
+/**
+ * @brief playStage 반환값: 스테이지 결과 + 해당 스테이지 통계
+ *        ScoreBoard 는 playStage 지역 객체라 소멸 전에 통계를 꺼내 메인으로 전달
+ */
+struct StageOutcome {
+    StageResult result;
+    GameStats   stats;
+};
 
 /**
  * @brief 난이도 이름 문자열 반환 (전환 화면 출력용)
@@ -104,12 +126,66 @@ void showStageTransition(Difficulty next) {
 }
 
 /**
+ * @brief 게임 종료 화면: 승/패 메시지와 전 스테이지 누적 통계를 화면 중앙에 출력하고
+ *        키 입력이 들어올 때까지 대기
+ * @param won   모든 스테이지를 클리어했으면 true(승리), 아니면 false(패배)
+ * @param total 전 스테이지 누적 통계(생존 시간/G/P 합산, 최대 길이는 최댓값)
+ */
+void showGameResult(bool won, const GameStats& total) {
+    clear();
+
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+    int cy = rows / 2;
+
+    const char* title = won
+        ? "Congratulations. You have cleared all stages."
+        : "YOU DIED";
+
+    char survived[128], items[128], maxlen[128];
+    std::snprintf(survived, sizeof(survived),
+                  "You survived for %d seconds.", total.survival_time);
+    std::snprintf(items, sizeof(items),
+                  "You ate %d G and %d P in total.", total.growth, total.poison);
+    std::snprintf(maxlen, sizeof(maxlen),
+                  "Your maximum length was %d.", total.max_length);
+
+    const char* lines[] = { title, "", survived, items, maxlen };
+    const int n = (int)(sizeof(lines) / sizeof(lines[0]));
+    int top = cy - n / 2;
+
+    for(int k = 0; k < n; k++) {
+        mvprintw(top + k, (cols - (int)std::strlen(lines[k])) / 2, "%s", lines[k]);
+    }
+
+    const char* hint = "Press any key to exit...";
+    mvprintw(top + n + 1, (cols - (int)std::strlen(hint)) / 2, "%s", hint);
+    refresh();
+
+    flushinp();      // 게임 중 눌린 잔여 입력 제거
+    timeout(-1);     // 블로킹 모드로 전환 후 키 입력 대기
+    getch();
+}
+
+/**
+ * @brief ScoreBoard 의 현재 기록을 GameStats 로 추출 (sb 소멸 전 호출)
+ */
+static GameStats captureStats(const ScoreBoard& sb) {
+    GameStats s;
+    s.survival_time = sb.getSurvivalTime();
+    s.growth        = sb.getGrowthCnt();
+    s.poison        = sb.getPoisonCnt();
+    s.max_length    = sb.getMaxLength();
+    return s;
+}
+
+/**
  * @brief 주어진 난이도 설정으로 한 스테이지를 실행
  *        스테이지마다 객체를 새로 생성하므로 별도의 초기화 로직이 불필요
  * @param config 난이도별 설정값(맵, 미션, 틱 속도 등)
- * @return 스테이지 실행 결과(Cleared/GameOver/Quit)
+ * @return 스테이지 실행 결과(Cleared/GameOver)와 해당 스테이지 통계
  */
-StageResult playStage(const GameConfig& config) {
+StageOutcome playStage(const GameConfig& config) {
     /* 객체 생성 순서 주의: Gate → Snake 순서로 생성 */
     Map map(config); //config 래퍼로 받아서 내부에서 사용 바랍니다!
     ScoreBoard sb(8, 30, 0, config.map_size.width * 2 + 4, config); //맵은 한 칸당 2문자폭(블록+공백)으로 출력하므로 *2
@@ -132,7 +208,10 @@ StageResult playStage(const GameConfig& config) {
 
     while(true) {
         int ch = collectInput(config.tick_ms);
-        if(ch == 'q') return StageResult::Quit;
+        if(ch == 'q') {                 // q 종료 = 그 자리에서 사망 처리
+            sb.setEndTime();
+            return { StageResult::GameOver, captureStats(sb) };
+        }
         int dir = getDirection(ch);
 
         // 방향 전환 (-1이면 방향키 외 입력 → 무시)
@@ -146,7 +225,7 @@ StageResult playStage(const GameConfig& config) {
         }
 
         // 5초마다 아이템 생성
-        if(isExpired(last_item_spawn,5)){
+        if(isExpired(last_item_spawn,2)){
             item.CreateItem(map,config.level);
             last_item_spawn = std::chrono::steady_clock::now();
         }
@@ -156,7 +235,7 @@ StageResult playStage(const GameConfig& config) {
         // 이동 실패 시 게임 오버
         if(!snk.move()) {
             sb.setEndTime();
-            return StageResult::GameOver;
+            return { StageResult::GameOver, captureStats(sb) };
         }
 
         //먹은 아이템을 리스트에서 제거
@@ -172,7 +251,7 @@ StageResult playStage(const GameConfig& config) {
         // 미션 달성 시 현재 스테이지 클리어
         if(sb.completeMission()) {
             sb.setEndTime();
-            return StageResult::Cleared;
+            return { StageResult::Cleared, captureStats(sb) };
         }
     }
 }
@@ -230,34 +309,37 @@ int main() {
     const int stage_count = sizeof(stages) / sizeof(stages[0]);
 
     bool cleared_all = true; // 모든 스테이지를 클리어했는지 여부
+    GameStats total;         // 전 스테이지 누적 통계
 
     for(int i = 0; i < stage_count; i++) {
         // 현재 난이도 설정 생성
         // (config는 ScoreBoard가 참조로 보관하므로 playStage보다 오래 살아있어야 함 → 여기서 생성)
         GameConfig config = makeConfig(stages[i]);
 
-        StageResult result = playStage(config);
+        StageOutcome outcome = playStage(config);
+
+        // 스테이지 통계 누적: 시간/G/P는 합산, 최대 길이는 최댓값
+        total.survival_time += outcome.stats.survival_time;
+        total.growth        += outcome.stats.growth;
+        total.poison        += outcome.stats.poison;
+        total.max_length     = std::max(total.max_length, outcome.stats.max_length);
 
         // 클리어가 아니면(사망 또는 q 종료) 게임 종료
-        if(result != StageResult::Cleared) {
+        if(outcome.result != StageResult::Cleared) {
             cleared_all = false;
             break;
         }
 
         // 현재 스테이지 클리어
-        // 다음 스테이지가 있으면 전환 화면 출력 후 계속, 없으면(어려움 클리어) 루프 종료
+        // 다음 스테이지가 있으면 전환 화면 출력 후 계속, 없으면(Extreme 클리어) 루프 종료
         if(i + 1 < stage_count) {
             showStageTransition(stages[i + 1]);
         }
     }
 
-    endwin(); // ncurses 종료
+    // 최종 결과 화면(승/패 + 누적 통계)을 ncurses로 출력하고 키 입력 대기
+    showGameResult(cleared_all, total);
 
-    // 최종 결과 출력
-    if(cleared_all) {// 어려움까지 모두 클리어
-        std::cout << "you win" << std::endl; 
-    } else {
-        std::cout << "game over" << std::endl;
-    }
+    endwin(); // ncurses 종료
     return 0;
 }

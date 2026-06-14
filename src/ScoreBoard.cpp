@@ -64,7 +64,7 @@ void ScoreBoard::addGateCnt() {
  */
 void ScoreBoard::resetScore() {
     current_length = 3; //현재 길이(초기값 3)
-    max_length = 0;     //최대 길이
+    max_length = current_length;     //최대 길이(초기 길이 3 반영)
     growth_cnt = 0;     //획득한 Growth Items
     poison_cnt = 0;     //획득한 Poison Items
     gate_cnt = 0;       //gate 사용 횟수
@@ -90,11 +90,20 @@ std::chrono::steady_clock::time_point ScoreBoard::getStartTime() const {
 }
 
 /**
- * @brief 게임 종료 시간 설정, 생존 시간 최종 업데이트
+ * @brief 게임 종료 시간 설정, 생존 시간 최종 확정
  */
 void ScoreBoard::setEndTime() {
     end_time = std::chrono::steady_clock::now();
+    survival_time = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count();
 }
+
+/**
+ * @brief 최종 결과 집계용 getters
+ */
+int ScoreBoard::getSurvivalTime() const { return survival_time; }
+int ScoreBoard::getGrowthCnt()    const { return growth_cnt; }
+int ScoreBoard::getPoisonCnt()    const { return poison_cnt; }
+int ScoreBoard::getMaxLength()    const { return max_length; }
 
 /**
  * @brief 미션 달성 여부 반환
