@@ -7,7 +7,7 @@
 Item::Item() {}
 Item::~Item() {}    
 
-void Item::CreateItem(Map& map){
+void Item::CreateItem(Map& map, Difficulty level){
     if(active_items.size() >= max_num) return; // 조건 : 동시에 최대 3개 존재
 
     ItemInfo item;
