@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 #include <utility> // std::pair 구조체 사용을 위해 추가
-#include "Config.hpp" // ⭐ [변경] Config의 GameConfig 및 MapSize 설정을 참조하기 위해 헤더 추가
+#include "Config.hpp" // GameConfig, MapSize 설정 참조
 
 // 맵 배열의 한 변 크기(고정). Map의 map 배열과 Snake/Gate가 받는 배열 포인터에 공통 사용
 constexpr int MAP_SIZE = 100;
@@ -26,14 +26,11 @@ enum TileType {
     GROWTH = 5,
     POISON = 6,
     GATE = 7,
-    SHIELD = 8 // ⭐ Item.cpp에서 새롭게 정의한 Shield 아이템 타입 추가
+    SHIELD = 8 // Shield 아이템
 };
 
 class Map {
 private:
-    // ⭐ [변경] 기존의 하드코딩된 내부 맵 크기 매핑 배열 제거
-    // const int MAP_SIZES[5][2] = {{0, 0}, {21, 21}, {25, 25}, {31, 31}, {35, 35}}; 
-
     int width;
     int height;
     int map_num;
@@ -49,18 +46,13 @@ private:
     bool loadMapFile();
 
 public:
-    // ⭐ [변경] 기존 Map(int map_num) 대신 Config의 중앙 집중형 설정을 받아오도록 생성자 변경
+    // Config의 중앙 집중형 설정을 받아 맵을 구성
     Map(const GameConfig& config);
-    
+
     int map[MAP_SIZE][MAP_SIZE];
 
     void mapClear();
     bool render(bool snake_shielded);
-
-    int getWidth() const;
-    int getHeight() const;
-    
-    bool is_empty(int x, int y) const { return map[x][y] == EMPTY; }
 
     /**
      * @brief 맵 내부의 빈 공간(EMPTY) 중 무작위 좌표 하나를 생성하여 반환합니다.

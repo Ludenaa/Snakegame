@@ -9,12 +9,6 @@
 #include "Config.hpp"
 
 
-struct WinSize{
-    //윈도우 높이:h, 윈도우 너비:w, Y 좌표:y, X 좌표:x
-    int h, w, y, x;
-};
-
-
 class ScoreBoard {
 private:
     WINDOW* scoreboard_win;     // ScoreBoard 윈도우 포인터

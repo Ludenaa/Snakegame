@@ -41,6 +41,4 @@ public:
     void CreateItem(Map& map, Difficulty level); //아이템 생성
     void removeExpiredItems(Map& map); // 10초가 지난 아이템을 맵과 리스트에서 삭제
     void clearItem(int x, int y); // 아이템 리스트에서 삭제
-
-    const std::vector<ItemInfo>& getItemsInfo() const { return active_items; } //아이템 정보 get함수
 };

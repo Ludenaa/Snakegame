@@ -62,8 +62,4 @@ public:
     // exit_pos: 진출 좌표(out), exit_dir: 진출 방향(out)
     void getExitInfo(std::pair<int,int> entry_pos, int entry_dir,
                      std::pair<int,int>& exit_pos, int& exit_dir) const;
-
-    bool getIsActive() const { return is_active; }
-    std::pair<int,int> getGateA() const { return gate_a; }
-    std::pair<int,int> getGateB() const { return gate_b; }
 };

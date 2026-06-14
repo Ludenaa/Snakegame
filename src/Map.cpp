@@ -9,14 +9,14 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <cstdlib> // rand() 사용을 위해 추가
-#include <utility> // std::pair 사용을 위해 추가
-#include "Config.hpp"  // ⭐ 추가
+#include <cstdlib> // rand()
+#include <utility> // std::pair
+#include "Config.hpp"
 
 Map::Map(const GameConfig& config) : force_redraw(true), prev_shielded(false){
-    map_num = config.map_num;         // ⭐ 로드할 맵 번호 (loadMapFile에서 파일명 생성에 사용)
-    width = config.map_size.width;    // ⭐ Config의 가로 크기 참조
-    height = config.map_size.height;  // ⭐ Config의 세로 크기 참조
+    map_num = config.map_num;         // 로드할 맵 번호 (loadMapFile에서 파일명 생성에 사용)
+    width = config.map_size.width;    // Config의 가로 크기
+    height = config.map_size.height;  // Config의 세로 크기
     loadMapFile();
 }
 

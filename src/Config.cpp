@@ -12,16 +12,16 @@ GameConfig makeConfig(Difficulty d) {
             return { d, 1, 200, {5, 2, 2, 2}, {21, 21} };
             
         case Difficulty::Normal:
-            // Normal : 2번 맵, 루프 간격 150ms, 미션 스코어 조건, 맵 사이즈 25x25
+            // Normal : 2번 맵, 루프 간격 170ms, 미션 스코어 조건, 맵 사이즈 25x25
             // 목표 : 간단한 도전, 길이의 한계 체험
             return { d, 2, 170, {15, 1, 1, 15}, {25, 25} };
             
         case Difficulty::Hard:
-            // Hard : 3번 맵, 루프 간격 100ms, 미션 스코어 조건, 맵 사이즈 31x31
+            // Hard : 3번 맵, 루프 간격 130ms, 미션 스코어 조건, 맵 사이즈 31x31
             // 목표 : 어려운 도전, 독을 최대한 많이 맛보기
             return { d, 3, 130, {5, 5, 10, 5}, {31, 31} };
         case Difficulty::Extreme:
-            // Extreme : 4번 맵, 루프 간격 80ms, 미션 스코어 조건, 맵 사이즈 31x31
+            // Extreme : 4번 맵, 루프 간격 80ms, 미션 스코어 조건, 맵 사이즈 35x35
             // 목표 : 챌린저, 미션 난이도 및 속도 전반적인 상향
             return { d, 4, 80, {25, 25, 25, 25}, {35, 35} };
             
