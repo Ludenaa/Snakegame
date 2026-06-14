@@ -26,7 +26,7 @@ void Item::CreateItem(Map& map, Difficulty level){
         if(rand_val == 0) item.type = ItemType::Growth;
         else item.type = ItemType::Poison;
     }
-    else if (level == Difficulty::Exetreme) {
+    else if (level == Difficulty::Extreme) {
         //쉴드x Growth, Poison 1:2 비율로 생성
         int rand_val = rand() % 3; 
         if(rand_val == 0) {
