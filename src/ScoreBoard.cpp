@@ -54,10 +54,11 @@ void ScoreBoard::addGrowth() {
 
 /**
  * @brief Poison Item 획득 횟수 추가
+ *        실드 보유 시(shielded=true)에는 실제 뱀 길이가 줄지 않으므로 길이도 감소시키지 않음
  */
-void ScoreBoard::addPoison() {
-    poison_cnt++; //획득한 Poison Items 횟수 추가
-    current_length--; //현재 길이 감소
+void ScoreBoard::addPoison(bool shielded) {
+    poison_cnt++;            //획득한 Poison Items 횟수 추가(미션용, 실드 여부와 무관)
+    if (!shielded) current_length--; //실드가 없을 때만 현재 길이 감소
 }
 
 

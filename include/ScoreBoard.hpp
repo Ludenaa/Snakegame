@@ -50,7 +50,7 @@ public:
     
     //adders
     void addGrowth();
-    void addPoison();
+    void addPoison(bool shielded); // shielded=true면 길이 감소 없이 카운트만 증가
     void addGateCnt();
 
 
