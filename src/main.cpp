@@ -145,7 +145,7 @@ StageResult playStage(const GameConfig& config) {
 
         // 5초마다 아이템 생성
         if(isExpired(last_item_spawn,5)){
-            item.CreateItem(map);
+            item.CreateItem(map,config.level);
             last_item_spawn = std::chrono::steady_clock::now();
         }
         // 시간초과된 아이템 삭제
