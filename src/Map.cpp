@@ -12,9 +12,11 @@
 #include <cstdlib> // rand() 사용을 위해 추가
 #include <utility> // std::pair 사용을 위해 추가
 
-Map::Map(int map_num) : map_num(map_num), force_redraw(true){
-    width = MAP_SIZES[map_num][0];
-    height = MAP_SIZES[map_num][1];
+Map::Map(const GameConfig& config) {
+    map_num = config.map_num;
+    width = config.map_size.width;    // ⭐ Config의 가로 크기 참조
+    height = config.map_size.height;  // ⭐ Config의 세로 크기 참조
+    force_redraw = true;
     loadMapFile();
 }
 
