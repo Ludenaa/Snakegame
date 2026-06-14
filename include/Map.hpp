@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <utility> // std::pair 구조체 사용을 위해 추가
+#include "Config.hpp" // ⭐ [변경] Config의 GameConfig 및 MapSize 설정을 참조하기 위해 헤더 추가
 
 // 맵 배열의 한 변 크기(고정). Map의 map 배열과 Snake/Gate가 받는 배열 포인터에 공통 사용
 constexpr int MAP_SIZE = 100;
@@ -27,7 +28,8 @@ enum TileType {
 
 class Map {
 private:
-    const int MAP_SIZES[5][2] = {{0, 0}, {21, 21}, {25, 25}, {31, 31}, {35, 35}}; // 맵 번호에 따른 (높이, 너비) 매핑
+    // ⭐ [변경] 기존의 하드코딩된 내부 맵 크기 매핑 배열 제거
+    // const int MAP_SIZES[5][2] = {{0, 0}, {21, 21}, {25, 25}, {31, 31}, {35, 35}}; 
 
     int width;
     int height;
@@ -42,7 +44,9 @@ private:
     bool loadMapFile();
 
 public:
-    Map(int map_num);
+    // ⭐ [변경] 기존 Map(int map_num) 대신 Config의 중앙 집중형 설정을 받아오도록 생성자 변경
+    Map(const GameConfig& config);
+    
     int map[MAP_SIZE][MAP_SIZE];
 
     void mapClear();
