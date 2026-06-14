@@ -1,3 +1,7 @@
+/**
+ * @file Gate.cpp
+ * @brief Gate 클래스 - 벽 위 게이트 쌍 생성/제거, 진입 시 반대편 게이트로의 진출 좌표·방향 계산
+ */
 #include "Gate.hpp"
 #include <cstdlib>
 #include <vector>

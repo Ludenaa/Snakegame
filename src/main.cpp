@@ -1,3 +1,7 @@
+/**
+ * @file main.cpp
+ * @brief 게임 진입점 - ncurses 초기화, 난이도별 스테이지 진행 및 메인 게임 루프 구동
+ */
 #include <ncurses.h>
 #include <iostream>
 #include <chrono>

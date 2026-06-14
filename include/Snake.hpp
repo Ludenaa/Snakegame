@@ -1,3 +1,7 @@
+/**
+ * @file Snake.hpp
+ * @brief Snake의 몸통·이동·방향 전환 및 벽/아이템/게이트와의 충돌 처리 인터페이스 선언
+ */
 #pragma once
 
 #include <deque>

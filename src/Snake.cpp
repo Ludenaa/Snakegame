@@ -1,3 +1,7 @@
+/**
+ * @file Snake.cpp
+ * @brief Snake 클래스 구현 - 뱀의 이동/성장/감소, 충돌 판정, 아이템 효과 및 게이트 통과 처리
+ */
 #include "Snake.hpp"
 #include "Map.hpp"
 

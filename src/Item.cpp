@@ -1,3 +1,7 @@
+/**
+ * @file Item.cpp
+ * @brief 빈 공간에 아이템을 무작위 생성하고, 만료(10초)·획득 시 맵과 목록에서 제거하는 아이템 클래스 구현
+ */
 #include "Item.hpp"
 
 Item::Item() {}

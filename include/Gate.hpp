@@ -1,3 +1,7 @@
+/**
+ * @file Gate.hpp
+ * @brief 맵의 벽 위에 생성되는 게이트(Gate) 쌍의 생성/제거 및 진출 좌표/방향 계산 인터페이스 선언
+ */
 #pragma once
 
 #include <utility>

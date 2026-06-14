@@ -1,3 +1,7 @@
+/**
+ * @file Item.hpp
+ * @brief 아이템(Growth/Poison/Shield)의 종류 정의 및 생성·만료·제거를 관리하는 Item 클래스 선언
+ */
 #pragma once
 #include <utility>
 #include <vector>
