@@ -24,17 +24,27 @@ include_directories(include)
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 # 8. 시스템 내에 ncurses 라이브러리가 설치되어 있는지 확인합니다.
-# REQUIRED는 이 라이브러리가 없으면 빌드를 중단하라는 뜻입니다.
-# 유니코드(■ 등 와이드 문자) 출력을 위해 ncursesw(와이드 버전)를 사용합니다.
+# 유니코드(■ 등 와이드 문자) 출력을 위해 ncursesw(와이드 버전)가 반드시 필요합니다.
 set(CURSES_NEED_WIDE TRUE)
 find_package(Curses REQUIRED)
 
 # 9. ncurses의 헤더 파일 경로를 컴파일러에게 알려줍니다.
-include_directories(${CURSES_INCLUDE_DIR})
+include_directories(${CURSES_INCLUDE_DIRS} ${CURSES_INCLUDE_DIR})
 
-# 10. 수집된 소스 파일(${SOURCES})들을 모아서 프로젝트 이름(${PROJECT_NAME})으로 된 실행 파일을 만듭니다.
+# 9-1. [중요] 환경/캐시에 따라 find_package가 좁은(narrow) libncurses로 잡혀
+#      'undefined reference to waddnwstr' 같은 링크 오류가 날 수 있습니다.
+#      와이드 라이브러리(ncursesw)를 명시적으로 찾아 직접 링크합니다.
+find_library(NCURSESW_LIB NAMES ncursesw)
+if(NOT NCURSESW_LIB)
+    message(FATAL_ERROR
+        "libncursesw(와이드 ncurses)를 찾을 수 없습니다.\n"
+        "  Ubuntu/Debian : sudo apt install libncursesw5-dev\n"
+        "  Fedora/RHEL   : sudo dnf install ncurses-devel\n"
+        "설치 후 build 폴더를 비우고 다시 빌드하세요.")
+endif()
+
+# 10. 수집된 소스 파일들을 모아서 실행 파일을 만듭니다.
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# 11. 실행 파일과 ncurses 실제 라이브러리 파일을 연결(Link)합니다.
-# 컴파일은 설계도를 보는 과정이라면, 링크는 실제 부품을 조립하는 과정입니다.
-target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES})
+# 11. 실행 파일과 와이드 ncurses(ncursesw) 라이브러리를 연결(Link)합니다.
+target_link_libraries(${PROJECT_NAME} ${NCURSESW_LIB})
