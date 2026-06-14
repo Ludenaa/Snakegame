@@ -142,7 +142,7 @@ void Snake::decrease() {
     dx = body.front().first;
     dy = body.front().second;
     body.pop_front();
-    arr[dx][dy] = EMPTY; // 이미 뱀으로 덮어서 게이트를 지난 경우 문제가 생김, 수정해야함
+    arr[dx][dy] = EMPTY; // 꼬리가 있던 칸을 빈 공간으로 되돌림
     passingGate--;
 }
 
