@@ -11,6 +11,7 @@
 #include <string>
 #include <cstdlib> // rand() 사용을 위해 추가
 #include <utility> // std::pair 사용을 위해 추가
+#include "Config.hpp"  // ⭐ 추가
 
 Map::Map(const GameConfig& config) {
     map_num = config.map_num;
