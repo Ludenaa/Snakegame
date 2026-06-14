@@ -1,26 +1,31 @@
 #!/bin/bash
 
-# build 폴더가 없으면 생성
+
 if [ ! -d "build" ]; then
   mkdir build
 fi
 
-# bin 폴더가 없으면 생성
 if [ ! -d "bin" ]; then
   mkdir bin
 fi
 
-# 3. 빌드 진행
-cd build
-cmake ..
-make
+cd build || exit 1
 
-# 4. 성공 시 실행
-if [ $? -eq 0 ]; then
+if ! cmake ..; then
+    echo "----------------------------"
+    echo "CMake configuration failed."
+    echo "----------------------------"
+    exit 1
+fi
+
+if make; then
     echo "----------------------------"
     echo "Build Success, Running Game..."
     echo "----------------------------"
     ../bin/SnakeGame
 else
+    echo "----------------------------"
     echo "Build Failed."
+    echo "----------------------------"
+    exit 1
 fi
