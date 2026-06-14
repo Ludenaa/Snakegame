@@ -4,7 +4,7 @@
  */
 #pragma once
 
-enum class Difficulty { Easy = 1, Normal = 2, Hard = 3 };
+enum class Difficulty { Easy = 1, Normal = 2, Hard = 3, Exetreme = 4};
 
 struct MissionGoal { int length, growth, poison, gate; };  // ScoreBoard용
 struct MapSize { int width, height; };  // Map용
