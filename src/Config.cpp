@@ -17,7 +17,7 @@ GameConfig makeConfig(Difficulty d) {
         case Difficulty::Hard:
             // Hard : 3번 맵, 루프 간격 100ms, 미션 스코어 조건, 맵 사이즈 31x31
             return { d, 3, 100, {1, 1, 1, 1}, {31, 31} };
-        case Difficulty::Exetreme:
+        case Difficulty::Extreme:
             // Hard : 3번 맵, 루프 간격 100ms, 미션 스코어 조건, 맵 사이즈 31x31
             return { d, 3, 90, {1, 1, 1, 1}, {35, 35} };
             
